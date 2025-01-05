@@ -44,6 +44,7 @@ const SignUpForm = ({ toast, isSignin, setIsSignin, toggle, setFormClose }) => {
       image: fileURL,
       accountType: "Writer",
     });
+    console.log("Res: ", res);
   };
 
   useEffect(() => {
