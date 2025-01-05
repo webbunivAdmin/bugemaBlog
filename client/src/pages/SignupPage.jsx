@@ -6,9 +6,11 @@ import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 import { Button, Divider, Inputbox, Logo } from "../components";
+import { getGoogleSignUp, emailSign } from "../utils/apiCalls";
+import useStore from "../store";
 
 const SignupPage = () => {
-  const user = {};
+  const {user, signIn, setIsLoading } = useStore()
   const [showForm, setShowForm] = useState(false);
   const [data, setData] = useState({
     firstName: "",
@@ -28,7 +30,22 @@ const SignupPage = () => {
     });
   };
 
-  const googleLogin = async () => {};
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsLoading(true);
+
+      const user = await getGoogleSignUp(tokenResponse.access_token);
+
+      setIsLoading(false)
+
+      if (user.success===true) {
+       saveUserInfo(user, signIn)
+
+      } else {
+        toast.error(user?.message);
+      }
+    },
+  });
 
   const handleSubmit = async () => {};
 
