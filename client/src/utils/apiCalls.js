@@ -22,13 +22,42 @@ export const getGoogleSignUp = async(accessToken) => {
 
             const result = await axios.post(`${API_URL}/auth/google-signup`, data);
             console.log(data);
+
+            return result?.data;
         }
     } catch (error) {
+        const err = error?.response?.data || error?.response;
         console.log(error);
     }
-}
+};
+export const googleSignIn = async (token) => {
+    try {
+        const user = await axios.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        ).then((res) => res.data);
 
-export const emailSign = async (data) => {
+        if(user?.sub){
+            const data ={
+                email: user.email,
+                };
+
+                const result = await axios.post(`${API_URL}/auth/login`, data);
+                return result?.data;
+        }
+    } catch (error) {
+        const err = error?.response?.data || error?.response;
+        console.log(error);
+
+        return err;
+    }
+};
+
+
+export const emailSignUp = async (data) => {
     try {   
         const result = await axios.post(`${API_URL}/auth/register`, data);
         return result?.data;
@@ -39,3 +68,15 @@ export const emailSign = async (data) => {
         return err;
     }
 }
+
+export const emailLogin = async (data) => {
+    try {
+        const result = await axios.post(`${API_URL}/auth/login`, data);
+        return result?.data;
+    } catch (error) {
+        const err = error?.response?.data || error?.response;
+        console.log(error);
+
+        return err;
+    }
+};
