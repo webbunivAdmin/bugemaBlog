@@ -121,7 +121,7 @@ const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false);
 
   const handleSignOut = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("userInfo");
     signOut();
   };
 
