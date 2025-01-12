@@ -30,7 +30,7 @@ export const usePosts = ({writerId}) => {
                 const {data} = await axios.get(`${API_URL}/posts?cat=${category}&page=${page}&writerId=${writerId || ""}`);
 
                 setPosts(data?.data || []);
-                setNumberOfPages(data?.numberOfPages || 1);
+                setNumberOfPages(data?.numOfPages || 1);
             } catch (error) {
                 toast.error("Something went wrong");
 

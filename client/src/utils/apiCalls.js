@@ -80,3 +80,16 @@ export const emailLogin = async (data) => {
         return err;
     }
 };
+
+export const getSinglePost = async (id)=>{
+  try {
+    const { data } = await axios.get(`${API_URL}/posts/${id}`);
+
+    return data?.data;
+    
+  } catch (error) {
+    const err = error?.response?.data || error?.response;
+    return err;
+    
+  }
+};
