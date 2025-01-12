@@ -8,11 +8,12 @@ import {
   PopularWriters,
 } from "../components";
 
-import { CATEGORIES, popular, posts } from "../utils/dummyData";
+import { CATEGORIES } from "../utils/dummyData";
+import { usePopularPosts, usePosts } from "../hooks/post-hook";
 
 const Home = () => {
-  const numOfPages = 4;
-  const [page, setPage] = useState(0);
+  const {posts, numOfPages , setPage} = usePosts({writerId: ""})
+  const popular = usePopularPosts();
 
   const randomIndex = Math.floor(Math.random() * posts.length);
 
@@ -63,7 +64,7 @@ const Home = () => {
 
             <div className='w-full flex items-cemter justify-center'>
               <Pagination
-                totalPages={numOfPages}
+                totalPages={parseInt(numOfPages)}
                 onPageChange={handlePageChange}
               />
             </div>
