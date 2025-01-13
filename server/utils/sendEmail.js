@@ -47,7 +47,7 @@ export const sendVerificationEmail = async (user, res, token) => {
     </p>
     <div style="margin-top: 20px;">
         <h5>Regards</h5>
-        <h5>BlogWave</h5>
+        <h5>Bugema University Blogs</h5>
     </div>
 </div>`,
   };

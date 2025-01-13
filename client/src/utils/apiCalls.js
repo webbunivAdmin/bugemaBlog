@@ -1,5 +1,5 @@
 import axios from "axios";
-export const API_URL = "https://localhost:8800";
+export const API_URI = "https://localhost:8800";
 
 
 export const getGoogleSignUp = async(accessToken) => {
@@ -20,7 +20,7 @@ export const getGoogleSignUp = async(accessToken) => {
                 image: user.picture,
             };
 
-            const result = await axios.post(`${API_URL}/auth/google-signup`, data);
+            const result = await axios.post(`${API_URI}/auth/google-signup`, data);
             console.log(data);
 
             return result?.data;
@@ -45,7 +45,7 @@ export const googleSignIn = async (token) => {
                 email: user.email,
                 };
 
-                const result = await axios.post(`${API_URL}/auth/login`, data);
+                const result = await axios.post(`${API_URI}/auth/login`, data);
                 return result?.data;
         }
     } catch (error) {
@@ -59,7 +59,7 @@ export const googleSignIn = async (token) => {
 
 export const emailSignUp = async (data) => {
     try {   
-        const result = await axios.post(`${API_URL}/auth/register`, data);
+        const result = await axios.post(`${API_URI}/auth/register`, data);
         return result?.data;
     } catch (error) {
         const err = error?.response?.data || error?.response;
@@ -71,7 +71,7 @@ export const emailSignUp = async (data) => {
 
 export const emailLogin = async (data) => {
     try {
-        const result = await axios.post(`${API_URL}/auth/login`, data);
+        const result = await axios.post(`${API_URI}/auth/login`, data);
         return result?.data;
     } catch (error) {
         const err = error?.response?.data || error?.response;
@@ -83,7 +83,7 @@ export const emailLogin = async (data) => {
 
 export const getSinglePost = async (id)=>{
   try {
-    const { data } = await axios.get(`${API_URL}/posts/${id}`);
+    const { data } = await axios.get(`${API_URI}/posts/${id}`);
 
     return data?.data;
     
@@ -96,7 +96,7 @@ export const getSinglePost = async (id)=>{
 
 export const getPostComments = async (id)=>{
   try {
-    const { data } = await axios.get(`${API_URL}/posts/comments/${id}`);
+    const { data } = await axios.get(`${API_URI}/posts/comments/${id}`);
 
     return data?.data;
     
@@ -108,7 +108,7 @@ export const getPostComments = async (id)=>{
 };
 export const postComments = async (id, token, data)=>{
     try {
-        const result = await axios.post(`${API_URL}/posts/comment/${id}`, data,
+        const result = await axios.post(`${API_URI}/posts/comment/${id}`, data,
             {
                 headers: {
                     Authorization: "Bearer " + token}
@@ -124,7 +124,7 @@ export const postComments = async (id, token, data)=>{
 };
 export const deletePostComments = async (id, token, postId)=>{
     try {
-        const result = await axios.delete(`${API_URL}/posts/comment/${id}/${postId}`,
+        const result = await axios.delete(`${API_URI}/posts/comment/${id}/${postId}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -142,7 +142,7 @@ export const deletePostComments = async (id, token, postId)=>{
 
 export const getWriterInfo = async (id) =>{
     try {
-        const {data } = await axios.get(`${API_URL}/users/get-user/${id}`);
+        const {data } = await axios.get(`${API_URI}/users/get-user/${id}`);
         return data?.data;
     } catch (error) {
         const err = error?.response?.data || error?.response;
@@ -154,7 +154,7 @@ export const getWriterInfo = async (id) =>{
 
 export const followWriter = async (id, token)=>{
     try {
-        const res = await axios.post(`${API_URL}/users/follower/${id}`, null,
+        const res = await axios.post(`${API_URI}/users/follower/${id}`, null,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
