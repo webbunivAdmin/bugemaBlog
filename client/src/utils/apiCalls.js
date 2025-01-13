@@ -1,14 +1,14 @@
 import axios from "axios";
-export const API_URL = "https://localhost:8800";
+export const API_URL = 'https://localhost:8800';
 
 
 export const getGoogleSignUp = async(accessToken) => {
     try {
         const user = await axios.get(
-            "https://www.googleapis.com/oauth2/v2/userinfo", {
+            "https://www.googleapis.com/oauth2/v3/userinfo", {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
-                }
+                },
             }
         ).then((res) => res.data);
 
@@ -28,6 +28,8 @@ export const getGoogleSignUp = async(accessToken) => {
     } catch (error) {
         const err = error?.response?.data || error?.response;
         console.log(error);
+
+        return err;
     }
 };
 export const googleSignIn = async (token) => {

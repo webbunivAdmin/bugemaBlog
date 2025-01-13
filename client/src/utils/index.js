@@ -24,7 +24,7 @@ export const saveUserInfo = (user, signIn) => {
     toast.success(user?.message);
 
     setTimeout(()=>{
-      window.history.back("");
+      window.history.back();
     }, 1500);
 };
 export const uploadFile = (setFileURL, file) => {
@@ -44,7 +44,13 @@ uploadTask.on(
       case "paused":
         console.log("Upload is paused");
         break;
-  }
+      case "running":
+        console.log("Upload is running");
+        break;
+      default:
+        console.log(`Unknown upload state: ${snapshot.state}`);
+        break;
+    }
 },
 (error) => {},
 () => {
