@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { BorderBeam } from "../ui/border-beam";
 
 const Logo = ({ type }) => {
   return (
@@ -19,9 +20,10 @@ const Logo = ({ type }) => {
       <Link to='/' className="flex items-center">
         <img
           src="/images/bu-logo.png" // Replace with the actual path to your logo
-          alt="Blog Wave Logo"
+          alt="Bugema University Blog"
           className={`h-20 ${type && "h-22"}`} // Adjust height dynamically if needed
         />
+        <BorderBeam />
       </Link>
     </div>
   );

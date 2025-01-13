@@ -3,7 +3,7 @@ import useStore from "../store";
 import { useEffect, useState } from "react";
 import { updateURL } from "../utils";
 import axios from "axios";
-import { API_URI } from "../utils/apiCalls";
+import { API_URL } from "../utils/apiCalls";
 import { toast } from "sonner";
 
 
@@ -19,7 +19,7 @@ export const usePosts = ({writerId}) => {
     const [category, setCategory ] = useState(searchParams.get("cat") || "");
 
     const [posts, setPosts] = useState([]);
-    const [numOfPages, setNumberOfPages] = useState(1);
+    const [numOfPages, setNumOfPages] = useState(1);
 
     useEffect(()=> {
         const fetchPosts = async() => {
@@ -27,10 +27,15 @@ export const usePosts = ({writerId}) => {
             setIsLoading(true);
 
             try {
-                const {data} = await axios.get(`${API_URI}/posts?cat=${category}&page=${page}&writerId=${writerId || ""}`);
-
+                const {data} = await axios.get(`${API_URL}/posts?cat=${category}&page=${page}&writerId=${writerId || ""}`);
+        
                 setPosts(data?.data || []);
-                setNumberOfPages(data?.numOfPages || 1);
+                setNumOfPages(data?.numOfPages );
+
+                console.log("Posts ", data)
+                console.log("API Response Data: ", data);
+
+
             } catch (error) {
                 toast.error("Something went wrong");
 
@@ -60,7 +65,7 @@ export const usePopularPosts =()=> {
     useEffect(()=>{
         const fetchPosts = async() => {
             try {
-                const {data } = await axios.get(`${API_URI}/posts/popular`);
+                const {data } = await axios.get(`${API_URL}/posts/popular`);
                 setPopular(data?.data);
                 
             } catch (error) {

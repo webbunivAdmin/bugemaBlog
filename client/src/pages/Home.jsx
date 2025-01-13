@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -13,6 +15,9 @@ import { usePopularPosts, usePosts } from "../hooks/post-hook";
 
 const Home = () => {
   const {posts, numOfPages , setPage} = usePosts({writerId: ""})
+
+  console.log("Posts ", posts)
+
   const popular = usePopularPosts();
 
   const randomIndex = Math.floor(Math.random() * posts.length);
@@ -22,13 +27,15 @@ const Home = () => {
 
     console.log(val);
   };
+  
 
-  if (posts?.length < 1)
+  if (posts?.length < 1) {
     return (
       <div className='w-full h-full py-8 flex items-center justify-center'>
         <span className='text-lg text-slate-500'>No Post Available</span>
       </div>
     );
+  }
 
   return (
     <div className='py-10 2xl:py-5'>
