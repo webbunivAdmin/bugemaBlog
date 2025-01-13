@@ -93,3 +93,79 @@ export const getSinglePost = async (id)=>{
     
   }
 };
+
+export const getPostComments = async (id)=>{
+  try {
+    const { data } = await axios.get(`${API_URL}/posts/comments/${id}`);
+
+    return data?.data;
+    
+  } catch (error) {
+    const err = error?.response?.data || error?.response;
+    return err;
+    
+  }
+};
+export const postComments = async (id, token, data)=>{
+    try {
+        const result = await axios.post(`${API_URL}/posts/comment/${id}`, data,
+            {
+                headers: {
+                    Authorization: "Bearer " + token}
+                }
+        );
+        return result?.data;
+        
+      } catch (error) {
+        const err = error?.response?.data || error?.response;
+        return err;
+        
+      }
+};
+export const deletePostComments = async (id, token, postId)=>{
+    try {
+        const result = await axios.delete(`${API_URL}/posts/comment/${id}/${postId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                }
+        );
+        return result?.data;
+        
+      } catch (error) {
+        const err = error?.response?.data || error?.response;
+        return err;
+        
+      }
+};
+
+export const getWriterInfo = async (id) =>{
+    try {
+        const {data } = await axios.get(`${API_URL}/users/get-user/${id}`);
+        return data?.data;
+    } catch (error) {
+        const err = error?.response?.data || error?.response;
+
+        return err;
+        
+    }
+};
+
+export const followWriter = async (id, token)=>{
+    try {
+        const res = await axios.post(`${API_URL}/users/follower/${id}`, null,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                }
+        );
+        return res?.data;
+        
+      } catch (error) {
+        const err = error?.response?.data || error?.response;
+        return err;
+        
+      }
+};

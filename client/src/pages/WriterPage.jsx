@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUserCheck } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import NoProfile from "../assets/profile.png";
@@ -13,21 +13,45 @@ import useStore from "../store";
 import { formatNumber } from "../utils";
 import { popular, posts, writer } from "../utils/dummyData";
 
+import { usePopularPosts, usePosts } from "../hooks/post-hook";
+import { followWriter, getWriterInfo } from "../utils/apiCalls";
+
 const WriterPage = () => {
   const { user } = useStore();
 
   const { id } = useParams();
-  const numOfPages = 4;
-  const [page, setPage] = useState(0);
+  
+  const { posts, numOfPages, setPage } = usePosts({ writerId: id });
+
+  const popular = usePopularPosts();
+  const [writer, setWriter] = useState(null);
 
   const handlePageChange = (val) => {
     setPage(val);
 
     console.log(val);
   };
-  // const [writer, setWriter] = useState(null);
+  // const [writer, setWriter] = useState(null); 
 
-  const followerIds = writer.followers.map((f) => fetch.followerId);
+  const fetchWriter = async () => {
+    const res = await getWriterInfo(id);
+
+    setWriter(res);
+  }
+
+  const handleFollow = async() => {
+    const res = await followWriter(id, user?.token);
+
+      if (res.success === true) fetchWriter();
+    };
+
+  useEffect(()=> {
+    
+    fetchWriter();
+
+  }, [id])
+
+  const followerIds = writer?.followers.map((f) => f.followerId);
 
   if (!writer)
     return (
@@ -70,7 +94,7 @@ const WriterPage = () => {
               {!followerIds?.includes(user?.user?._id) ? (
                 <Button
                   label='Follow'
-                  onClick={() => {}}
+                  onClick={() => handleFollow()}
                   styles='text-slate-800 text-semibold md:-mt-4 px-6 py-1 rounded-full bg-white'
                 />
               ) : (
