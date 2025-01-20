@@ -6,9 +6,13 @@ import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 import { Button, Divider, Inputbox, Logo } from "../components";
+import { getGoogleSignUp, emailSignUp } from "../utils/apiCalls";
+import useStore from "../store";
+import { saveUserInfo } from "../utils";
+import { MdUploadFile } from "react-icons/md";
 
 const SignupPage = () => {
-  const user = {};
+  const {user, signIn, setIsLoading } = useStore()
   const [showForm, setShowForm] = useState(false);
   const [data, setData] = useState({
     firstName: "",
@@ -28,11 +32,46 @@ const SignupPage = () => {
     });
   };
 
-  const googleLogin = async () => {};
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsLoading(true);
 
-  const handleSubmit = async () => {};
+      const user = await getGoogleSignUp(tokenResponse?.access_token);
+
+      setIsLoading(false)
+
+      if (user?.success===true) {
+       saveUserInfo(user, signIn)
+
+      } else {
+        toast.error(user?.message);
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error("Login Error, Try again");
+    },
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const result = await emailSignUp({ ...data, image: fileURL });
+    setIsLoading(false);
+
+    if (result?.success === true) {
+      saveUserInfo(result, signIn);
+    } else {
+      toast.error(result?.message);
+    }
+  };
 
   if (user.token) window.location.replace("/");
+
+  useEffect(() => {
+    file && MdUploadFile(setFileURL, file);
+  }, []);
 
   return (
     <div className='flex w-full h-[100vh]'>

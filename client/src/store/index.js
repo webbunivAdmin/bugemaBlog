@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 const useStore = create((set) => ({
-  user: JSON.parse(localStorage.getItem("user")) || {},
+  user: JSON.parse(localStorage.getItem("userInfo")) || {},
   isLoading: false,
 
   theme: localStorage.getItem("theme") ?? "light",
