@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { API_URI } from "../utils";
+export const API_URI = process.env.REACT_APP_API_URL;
 
 export const useSignUp = (toast, toggle) => {
   return useMutation({

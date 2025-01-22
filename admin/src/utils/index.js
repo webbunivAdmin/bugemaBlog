@@ -6,7 +6,7 @@ import {
 } from "firebase/storage";
 import { app } from "./firebase";
 
-export const API_URI = process.env.REACT_APP_API_URI;
+export const API_URI = process.env.REACT_APP_API_URL;
 
 export const uploadFile = (setFileURL, file) => {
   const storage = getStorage(app);
