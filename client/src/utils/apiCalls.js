@@ -1,5 +1,5 @@
 import axios from "axios";
-export const API_URL = 'https://localhost:8800';
+export const API_URL = process.env.REACT_APP_API_URL;
 
 
 export const getGoogleSignUp = async(accessToken) => {

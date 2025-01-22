@@ -6,7 +6,7 @@ import {
 } from "firebase/storage";
 import { app } from "./firebase";
 
-export const API_URI = "http://localhost:8800";
+export const API_URI = process.env.REACT_APP_API_URI;
 
 export const uploadFile = (setFileURL, file) => {
   const storage = getStorage(app);
@@ -66,11 +66,11 @@ export function getInitials(fullName) {
 export function createSlug(title) {
   return title
     .toLowerCase()
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/[^\w-]+/g, "") // Remove non-word characters
-    .replace(/--+/g, "-") // Replace multiple - with single -
-    .replace(/^-+/, "") // Trim - from start of text
-    .replace(/-+$/, ""); // Trim - from end of text
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 }
 
 export const updateURL = ({ page, navigate, location }) => {
