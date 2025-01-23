@@ -12,6 +12,9 @@ import {
 
 import { CATEGORIES } from "../utils/dummyData";
 import { usePopularPosts, usePosts } from "../hooks/post-hook";
+import RelatedContent from "../components/related-content";
+import BecomeBlogger from "../components/become-blogger";
+import Hero from "../components/hero";
 
 const Home = () => {
   const {posts, numOfPages , setPage} = usePosts({writerId: ""})
@@ -39,6 +42,7 @@ const Home = () => {
 
   return (
     <div className='py-10 2xl:py-5'>
+      <Hero />
       <Banner post={posts[randomIndex]} />
 
       <div className='px-0 lg:pl-20 2xl:px-20 '>
@@ -87,6 +91,12 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* <Navigation/> */}
+
+      <BecomeBlogger />
+
+      <RelatedContent />
     </div>
   );
 };
