@@ -5,7 +5,6 @@ import { FaFacebook, FaInstagram, FaTwitterSquare, FaYoutube, FaBars, FaTimes } 
 import useStore from "../store"
 import Logo from "./Logo"
 import ThemeSwitch from "./Switch"
-import { Search } from "lucide-react"
 
 function getInitials(fullName) {
   const names = fullName.split(" ")
@@ -64,29 +63,27 @@ const Navbar = () => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 transition-all duration-300  ${
+      className={`fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 transition-all duration-300 ${
         isScrolled ? "shadow-md py-2" : "py-4"
       }`}
     >
-      <div className="mx-auto px-4">
-        <div className="flex items-start justify-between">
-        <Logo className="w-6 h-6 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-18 lg:h-18" />
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between">
+          <Logo />
 
           <div className="hidden md:flex items-center space-x-8">
-          <Search className="w-6 h-6 dark:text-white text-blue-800" />
             <ul className="flex space-x-6">
-              <NavLink to="/" className="text-base font-semibold">Home</NavLink>
-              <NavLink to="/blog" className="text-lg font-medium">Blog</NavLink>
-              <NavLink to="/about" className="text-sm font-normal">About Us</NavLink>
-              <NavLink to="/news" className="text-xl font-semibold">News & Events</NavLink>
-              <NavLink to="/contact" className="text-base font-light">Contact</NavLink>
+              <NavLink to="/">Home</NavLink>
+              <NavLink to="/blog">Blog</NavLink>
+              <NavLink to="/about">About</NavLink>
+              <NavLink to="/contact">Contact</NavLink>
             </ul>
 
             <div className="flex items-center space-x-4">
-              <SocialIcon Icon={FaFacebook} href="https://facebook.com" color="text-blue-600 text-lg" />
-              <SocialIcon Icon={FaTwitterSquare} href="https://twitter.com" color="text-blue-400 text-xl" />
-              <SocialIcon Icon={FaInstagram} href="https://instagram.com" color="text-pink-600 text-sm" />
-              <SocialIcon Icon={FaYoutube} href="https://youtube.com" color="text-red-600 text-lg" />
+              <SocialIcon Icon={FaFacebook} href="https://facebook.com" color="text-blue-600" />
+              <SocialIcon Icon={FaTwitterSquare} href="https://twitter.com" color="text-blue-400" />
+              <SocialIcon Icon={FaInstagram} href="https://instagram.com" color="text-pink-600" />
+              <SocialIcon Icon={FaYoutube} href="https://youtube.com" color="text-red-600" />
             </div>
 
             <ThemeSwitch />
@@ -100,13 +97,13 @@ const Navbar = () => {
                   onClick={() => setShowProfile(!showProfile)}
                 >
                   {user.user.image ? (
-                    <img src={user.user.image || "/placeholder.svg"} alt="Profile" className="w-10 h-10 rounded-full" />
+                    <img src={user.user.image || "/placeholder.svg"} alt="Profile" className="w-8 h-8 rounded-full" />
                   ) : (
-                    <span className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-lg">
+                    <span className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white">
                       {getInitials(user.user.name)}
                     </span>
                   )}
-                  <span className="font-medium text-gray-700 dark:text-gray-300 text-lg">{user.user.name.split(" ")[0]}</span>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">{user.user.name.split(" ")[0]}</span>
                 </motion.div>
 
                 <AnimatePresence>
@@ -115,7 +112,7 @@ const Navbar = () => {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10"
+                      className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10"
                     >
                       <Link
                         to="/profile"
@@ -144,7 +141,7 @@ const Navbar = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200 text-lg"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
                 >
                   Sign in
                 </motion.button>
@@ -165,8 +162,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* end  */}
-
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -176,21 +171,26 @@ const Navbar = () => {
             className="md:hidden bg-white dark:bg-gray-900 shadow-lg"
           >
             <div className="container mx-auto px-4 py-4">
-            <Search className="w-6 h-6 dark:text-white text-blue-800" />
-          
               <ul className="space-y-4">
-              <NavLink to="/" className="text-base font-semibold">Home</NavLink>
-              <NavLink to="/blog" className="text-lg font-medium">Blog</NavLink>
-              <NavLink to="/about" className="text-sm font-normal">About Us</NavLink>
-              <NavLink to="/news" className="text-xl font-semibold">News & Events</NavLink>
-              <NavLink to="/contact" className="text-base font-light">Contact</NavLink>
+                <NavLink to="/" onClick={toggleMenu}>
+                  Home
+                </NavLink>
+                <NavLink to="/blog" onClick={toggleMenu}>
+                  Blog
+                </NavLink>
+                <NavLink to="/about" onClick={toggleMenu}>
+                  About
+                </NavLink>
+                <NavLink to="/contact" onClick={toggleMenu}>
+                  Contact
+                </NavLink>
               </ul>
-              <div className="flex items-center space-x-4">
-              <SocialIcon Icon={FaFacebook} href="https://facebook.com" color="text-blue-600 text-lg" />
-              <SocialIcon Icon={FaTwitterSquare} href="https://twitter.com" color="text-blue-400 text-xl" />
-              <SocialIcon Icon={FaInstagram} href="https://instagram.com" color="text-pink-600 text-sm" />
-              <SocialIcon Icon={FaYoutube} href="https://youtube.com" color="text-red-600 text-lg" />
-            </div>
+              <div className="mt-6 flex justify-center space-x-4">
+                <SocialIcon Icon={FaFacebook} href="https://facebook.com" color="text-blue-600" />
+                <SocialIcon Icon={FaTwitterSquare} href="https://twitter.com" color="text-blue-400" />
+                <SocialIcon Icon={FaInstagram} href="https://instagram.com" color="text-pink-600" />
+                <SocialIcon Icon={FaYoutube} href="https://youtube.com" color="text-red-600" />
+              </div>
               <div className="mt-6 flex justify-center">
                 <ThemeSwitch />
               </div>
