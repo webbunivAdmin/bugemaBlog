@@ -32,7 +32,6 @@ app.get("/", (req, res) => {
 });
 
 app.use(errorMiddleware);
-
 app.listen(PORT, () => {
   console.log("Server running of port " + PORT);
 });
