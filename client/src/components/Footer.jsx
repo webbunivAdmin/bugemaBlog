@@ -55,7 +55,7 @@ const Footer = () => {
   ]
 
   return (
-    <footer className="bg-gray-400 dark:bg-gradient-to-r from-[#020b19] via-[#071b3e] to-[#020b19] text-white pt-12 pb-4">
+    <footer className="bg-white-400 dark:bg-gradient-to-r from-[#020b19] via-[#071b3e] to-[#020b19] text-black dark:text-white pt-12 pb-4">
       <div className="mx-auto px-4">
         <div className="flex flex-col lg:flex-row justify-between mb-12">
           <div className="mb-8 lg:mb-0">
@@ -129,7 +129,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-700 pt-4">
-          <div className="flex flex-wrap gap-4 text-sm text-gray-100 dark:text-gray-400">
+          <div className="flex flex-wrap gap-4 text-sm text-black dark:text-gray-100 dark:text-gray-400">
             <span>© Bugema University</span>
             {bottomLinks.map((link) => (
               <React.Fragment key={link.href}>
