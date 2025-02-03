@@ -100,7 +100,7 @@ export default function Home() {
         )}
       </div>
 
-      <div className="w-full flex flex-col md:flex-row gap-10 2xl:gap-20 px-4 md:px-6 lg:px-8 xl:px-20">
+      <div className=" flex flex-col md:flex-row gap-10 2xl:gap-20 px-4 md:px-6 lg:px-8 xl:px-20">
         {/* LEFT */}
         <div className="w-full md:w-2/3 flex flex-col gap-y-28 md:gap-y-14">
           {posts?.map((post, index) => (

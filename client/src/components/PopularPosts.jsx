@@ -1,57 +1,59 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { CATEGORIES } from "../utils/dummyData";
+import { Link } from "react-router-dom"
+import { CATEGORIES } from "../utils/dummyData"
+import { FiClock, FiTrendingUp } from "react-icons/fi"
 
 const PopularPosts = ({ posts }) => {
   const Card = ({ post }) => {
-    let catColor = "";
+    let catColor = ""
     CATEGORIES.map((cat) => {
       if (cat.label === post?.cat) {
-        catColor = cat?.color;
+        catColor = cat?.color
       }
-      return null;
-    });
+      return null
+    })
 
     return (
-      <div className='flex gap-2 items-center'>
+      <div className="flex items-center space-x-4 p-4 rounded-lg transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-700">
         <img
-          src={post?.img}
+          src={post?.img }
           alt={post?.user?.name}
-          className='w-12 h-12 rounded-full object-cover'
+          className="w-20 h-20 rounded-lg object-cover shadow-md"
         />
-        <div className='w-full flex flex-col gap-1'>
-          <span
-            className={`${catColor} w-fit rounded-full px-2 py-0.5 text-white text-[12px] 2xl:text-sm`}
-          >
-            {post?.cat}
-          </span>
+        <div className="flex flex-col space-y-2">
+          <span className={`${catColor} w-fit rounded-full px-3 py-1 text-white text-xs font-medium`}>{post?.cat}</span>
           <Link
             to={`/${post?.slug}/${post?._id}`}
-            className='text-black dark:text-white'
+            className="text-lg font-semibold text-gray-800 dark:text-white hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300"
           >
             {post?.title}
           </Link>
-          <div className='flex gap-2 text-sm'>
-            <span className='font-medium'>{post?.user?.name}</span>
-            <span className='text-gray-500'>
-              {new Date(post?.createdAt).toDateString()}
+          <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+            <span className="font-medium">{post?.user?.name}</span>
+            <span>•</span>
+            <span className="flex items-center">
+              <FiClock className="mr-1" />
+              {new Date(post?.createdAt).toLocaleDateString()}
             </span>
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
-    <div className='w-full flex flex-col gap-8'>
-      <p className='text-xl font-bold -mb-3 text-gray-600 dark:text-slate-500'>
+    <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white flex items-center">
+        <FiTrendingUp className="mr-2 text-blue-500" />
         Popular Articles
-      </p>
-      {posts?.map((post, id) => (
-        <Card post={post} key={id} />
-      ))}
+      </h2>
+      <div className="space-y-6">
+        {posts?.map((post, id) => (
+          <Card post={post} key={id} />
+        ))}
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default PopularPosts;
+export default PopularPosts
+
