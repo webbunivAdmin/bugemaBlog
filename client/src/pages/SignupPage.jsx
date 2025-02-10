@@ -24,7 +24,6 @@ const SignupPage = () => {
   const [fileURL, setFileURL] = useState("");
 
   const handleChange = (e) => {
-    // const [name, value] = e.target;
     const { name, value } = e.target;
     setData({
       ...data,
