@@ -16,8 +16,8 @@ const { AUTH_EMAIL, AUTH_PASSWORD } = process.env;
 // });
 
 let transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
+  host: "smtp-relay.gmail.com",
+  port: 587,
   secure: true,
   auth: {
     user: AUTH_EMAIL,
@@ -31,26 +31,33 @@ export const sendVerificationEmail = async (user, res, token) => {
 
   //   mail options
   const mailOptions = {
-    from: AUTH_EMAIL,
+    from: "data@bugemauniv.ac.ug",
     to: email,
     subject: "Email Verification",
-    html: `<div
-    style='font-family: Arial, sans-serif; font-size: 20px; color: #333; background-color: #f7f7f7; padding: 20px; border-radius: 5px;'>
-    <h3 style="color: rgb(8, 56, 188)">Please verify your email address</h3>
-    <hr>
-    <h4>Hi, ${name},</h4>
-    <p>
-        Please verify your email address with the OTP.
-        <br>
-        <h1 styles='font-size: 20px; color: rgb(8, 56, 188);'>${otp}</h1>
-    <p>This OTP <b>expires in 2 mins</b></p>
-    </p>
-    <div style="margin-top: 20px;">
-        <h5>Regards</h5>
-        <h5>Bugema University Blogs</h5>
-    </div>
-</div>`,
-  };
+    html: `
+    <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px; text-align: center;">
+        <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <img src="https://cloud.appwrite.io/v1/storage/buckets/676995bd003a7bc1e278/files/67a9b43a0028ad0400db/view?project=674dcf7b003d57db960a&mode=admin" alt="Bugema University Logo" style="max-width: 150px; margin-bottom: 20px;">
+            <h2 style="color: #0838BC; margin-bottom: 10px;">Verify Your Email Address</h2>
+            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+                Hi <b>${name}</b>,<br>  
+                Please use the OTP below to verify your email address.
+            </p>
+            <div style="background: #0838BC; color: #fff; font-size: 24px; font-weight: bold; padding: 15px; border-radius: 6px; display: inline-block; margin-bottom: 20px;">
+                ${otp}
+            </div>
+            <p style="font-size: 14px; color: #777;">
+                This OTP <b>expires in 2 minutes</b>. If you did not request this, please ignore this email.
+            </p>
+            <hr style="border: 0; height: 1px; background: #ddd; margin: 20px 0;">
+            <p style="font-size: 14px; color: #555;">
+                Regards,<br>
+                <b>Bugema University Blogs Team</b>
+            </p>
+        </div>
+    </div>`
+};
+
 
   try {
     const hashedToken = await hashString(String(otp));
