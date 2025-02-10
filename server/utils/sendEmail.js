@@ -7,14 +7,6 @@ dotenv.config();
 
 const { AUTH_EMAIL, AUTH_PASSWORD } = process.env;
 
-// let transporter = nodemailer.createTransport({
-//   host: "smtp-mail.outlook.com",
-//   auth: {
-//     user: AUTH_EMAIL,
-//     pass: AUTH_PASSWORD,
-//   },
-// });
-
 let transporter = nodemailer.createTransport({
   host: "smtp-relay.gmail.com",
   port: 587,
