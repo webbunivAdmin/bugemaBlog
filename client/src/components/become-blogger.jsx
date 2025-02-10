@@ -5,17 +5,16 @@ import Button from "./Button";
 
 export default function BecomeBlogger() {
   return (
-    <section className="bg-[#1C1535] text-white py-20 relative overflow-hidden">
+    <section className="dark:bg-[#1C1535] dark:text-white text-black py-20 rounded-lg transition-all duration-300 bg-gray-100 ">
       <div className="container mx-auto text-center relative z-10">
         <h2 className="text-4xl font-serif mb-6">Become a student blogger</h2>
         <p className="max-w-2xl mx-auto mb-8">
-          If you are currently enrolled on a University of London programme and want to become a blogger, please contact
+          If you are currently enrolled on a University and want to become a blogger, please contact
           us. Make sure you include information on where you are from, what you are studying, your student number and
           why you want to blog.
         </p>
         <Button
-          variant="outline"
-          className="border-2 border-red-500 text-white hover:bg-red-500 hover:text-white transition-colors"
+          className="border-2 border-red-500 dark:text-white text-black hover:bg-red-500 hover:text-white transition-colors"
         >
           Contact us
         </Button>

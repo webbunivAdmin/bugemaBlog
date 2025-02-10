@@ -30,7 +30,7 @@ export default function RelatedContent() {
     ]
   
     return (
-      <section className="py-16 bg-white">
+      <section className="py-16 w-full bg-white dark:text-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
         <div className="container mx-auto">
           <h2 className="text-3xl font-serif mb-8">Related Content</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -38,15 +38,15 @@ export default function RelatedContent() {
               <div key={index} className="group cursor-pointer">
                 <div className="relative overflow-hidden">
                   <img
-                    src={article.image || "/placeholder.svg"}
+                    src={article.image }
                     alt={article.title}
                     className="w-full aspect-video object-cover transition-transform group-hover:scale-105"
                   />
                 </div>
                 <div className="mt-4">
                   <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                  <p className="text-gray-600 mb-4">{article.description}</p>
-                  <span className="inline-block px-3 py-1 text-sm border border-[#1C1535] text-[#1C1535]">
+                  <p className="text-blue-400 mb-4">{article.description}</p>
+                  <span className="inline-block px-3 py-1 text-sm border border-[#1C1535] ">
                     {article.tag}
                   </span>
                 </div>

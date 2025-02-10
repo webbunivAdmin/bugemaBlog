@@ -62,7 +62,7 @@ const WriterPage = () => {
 
   return (
     <div className='px-0 2xl:px-20 '>
-      <div className='w-full md:h-60 flex flex-col gap-5 items-center md:flex-row bg-black dark:bg-gradient-to-r from-[#020b19] via-[#071b3e] to-[#020b19]  mt-5 mb-10 rounded-md p-5 md:px-20'>
+      <div className='w-full md:h-60 flex flex-col gap-5 items-center md:flex-row bg-black dark:bg-gradient-to-r from-[#020b19] via-[#071b3e] to-[#020b19]  mt-5 mb-10 rounded-md p-5 md:px-20 lg:mt-[90px]'>
         <img
           src={writer?.image || NoProfile}
           alt='Writer'
