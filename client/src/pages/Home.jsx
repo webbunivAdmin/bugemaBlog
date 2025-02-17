@@ -124,7 +124,7 @@ export default function Home() {
 
       <BecomeBlogger />
 
-      <RelatedContent />
+      {/* <RelatedContent /> */}
     </div>
   )
 }

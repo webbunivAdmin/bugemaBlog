@@ -181,13 +181,13 @@ const SignupPage = () => {
             ) : (
               <>
                 <div className='max-w-md w-full space-y-8'>
-                  <Button
+                  {/* <Button
                     onClick={() => googleLogin()}
                     label='Sign up with Google'
                     icon={<FcGoogle className='text-xl' />}
                     styles='w-full flex flex-row-reverse gap-4 bg-black dark:bg-transparent dark:border text-white px-5 py-2.5 rounded-full'
                   />
-                  <Divider label='OR' />
+                  <Divider label='OR' /> */}
 
                   <Button
                     onClick={() => setShowForm(true)}
