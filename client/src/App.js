@@ -8,8 +8,9 @@ import {
   WriterPage,
 } from "./pages";
 import Loading from "./components/Loading";
-import { Footer, Navbar } from "./components";
+import { Navbar } from "./components";
 import useStore from "./store";
+import Footer from "./components/Footer";
 
 function Layout() {
   return (
