@@ -76,14 +76,14 @@ const LoginPage = () => {
               </h2>
             </div>
 
-            <Button
+            {/* <Button
               onClick={() => googleLogin()}
               label='Sign in with Google'
               icon={<FcGoogle className='' />}
               styles='w-full flex flex-row-reverse gap-4 bg-white dark:bg-transparent text-black dark:text-white px-5 py-2.5 rounded-full border border-gray-300'
             />
 
-            <Divider label='or sign in with email' />
+            <Divider label='or sign in with email' /> */}
 
             <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
               <div className='flex flex-col rounded-md shadow-sm -space-y-px gap-5'>

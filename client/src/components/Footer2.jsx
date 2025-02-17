@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react"
 import image from "../assets/bugema.png"
 
-const Footer = () => {
+const Footer2 = () => {
   const aboutLinks = [
     { title: "About us", href: "/about" },
     { title: "Research", href: "/research" },
@@ -146,5 +146,5 @@ const Footer = () => {
   )
 }
 
-export default Footer
+export default Footer2
 
