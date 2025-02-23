@@ -8,9 +8,7 @@ dotenv.config();
 const { AUTH_EMAIL, AUTH_PASSWORD } = process.env;
 
 let transporter = nodemailer.createTransport({
-  host: "smtp-relay.gmail.com",
-  port: 587,
-  secure: true,
+  service: "gmail",
   auth: {
     user: AUTH_EMAIL,
     pass: AUTH_PASSWORD,
@@ -23,7 +21,7 @@ export const sendVerificationEmail = async (user, res, token) => {
 
   //   mail options
   const mailOptions = {
-    from: "data@bugemauniv.ac.ug",
+    from: 'Bugema University Data Team "<data@bugemauniv.ac.ug>"',
     to: email,
     subject: "Email Verification",
     html: `
