@@ -252,6 +252,8 @@ export const updatePost = async (req, res, next) => {
   }
 };
 
+
+
 export const getPosts = async (req, res, next) => {
   try {
     const { cat, writerId } = req.query;
