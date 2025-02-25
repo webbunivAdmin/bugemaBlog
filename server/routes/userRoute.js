@@ -6,6 +6,7 @@ import {
   getWriter,
   resendOTP,
   updateUser,
+  getUsers,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.post("/resend-link/:id", resendOTP);
 
 // user routes
 router.post("/follower/:id", userAuth, followWritter);
+router.get("/all" , userAuth, getUsers);
 router.put("/update-user", userAuth, updateUser);
 
 router.get("/get-user/:id?", getWriter);

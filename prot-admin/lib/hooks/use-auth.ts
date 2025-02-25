@@ -53,7 +53,9 @@ export function useSignIn() {
     mutationFn: async (formData: { email: string; password: string }) => {
       const { data } = await axios.post(`${API_URI}/auth/login`, formData)
       localStorage.setItem("user", JSON.stringify(data.user))
-      Cookies.set("user", JSON.stringify(data.user), { expires: 7 }) // Expires in 7 days
+      localStorage.setItem("token", data.token)
+      Cookies.set("user", JSON.stringify(data.user), { expires: 7 })
+      Cookies.set("token", JSON.stringify(data.token), { expires: 7 })
       return data
     },
     onError: (error: any) => {

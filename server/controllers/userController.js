@@ -118,7 +118,7 @@ export const updateUser = async (req, res, next) => {
 
     user.password = undefined;
 
-    res.status(200).json({
+    return res.status(200).json({
       sucess: true,
       message: "User updated successfully",
       user,
@@ -155,5 +155,18 @@ export const getWriter = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "Something went wrong" });
+  }
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await Users.find();
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
