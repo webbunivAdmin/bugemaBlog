@@ -16,7 +16,7 @@ import { RecentComments } from "@/components/recent-comments"
 
 export default function DashboardPage() {
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 space-y-4">
       <h1 className="text-3xl font-bold">Dashboard</h1>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -64,7 +64,7 @@ export default function DashboardPage() {
             <CardTitle>Views Over Time</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[350px]">
+            <div className="h-[300px]">
               {/* <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={viewsData}>
                   <CartesianGrid strokeDasharray="3 3" />
