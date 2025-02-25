@@ -7,6 +7,11 @@ import {
   resendOTP,
   updateUser,
   getUsers,
+  approveUser,
+  suspendUser,
+  makeAdmin,
+  makeWriter,
+  suspendWriter
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -18,6 +23,12 @@ router.post("/resend-link/:id", resendOTP);
 router.post("/follower/:id", userAuth, followWritter);
 router.get("/all" , userAuth, getUsers);
 router.put("/update-user", userAuth, updateUser);
+
+router.patch('/approve/:id', userAuth, approveUser);
+router.patch('/suspend/:id', userAuth, suspendUser);
+router.patch('/makeadmin/:id', userAuth, makeAdmin);
+router.patch('/makewriter/:id', userAuth, makeAdmin);
+router.patch('/suspend/:id', userAuth, makeAdmin);
 
 router.get("/get-user/:id?", getWriter);
 
