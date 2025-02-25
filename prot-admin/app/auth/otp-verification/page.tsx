@@ -1,17 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
-import { Loader2 } from "lucide-react"
+import { useVerification, useResendOTP } from "@/lib/hooks/use-auth"
 
 const formSchema = z.object({
   otp: z.string().length(6, "OTP must be 6 digits"),
@@ -20,9 +19,8 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 export default function OTPVerificationPage() {
-  const [isLoading, setIsLoading] = React.useState(false)
   const [seconds, setSeconds] = React.useState(120)
-  const router = useRouter()
+  const [userId, setUserId] = React.useState<string>("")
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -32,6 +30,14 @@ export default function OTPVerificationPage() {
   })
 
   React.useEffect(() => {
+    const otpData = localStorage.getItem("otp_data")
+    if (otpData) {
+      const { id } = JSON.parse(otpData)
+      setUserId(id)
+    }
+  }, [])
+
+  React.useEffect(() => {
     const interval = setInterval(() => {
       setSeconds((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
@@ -39,34 +45,24 @@ export default function OTPVerificationPage() {
     return () => clearInterval(interval)
   }, [])
 
+  const { mutate: verifyOTP, isPending: isVerifying } = useVerification()
+  const { mutate: resendOTP, isPending: isResending } = useResendOTP()
+
+  function onSubmit(values: FormData) {
+    if (!userId) return
+    verifyOTP({ id: userId, otp: values.otp })
+  }
+
+  const handleResendOTP = () => {
+    if (!userId) return
+    resendOTP(userId)
+    setSeconds(120)
+  }
+
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60)
     const seconds = time % 60
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
-  }
-
-  async function onSubmit(values: FormData) {
-    try {
-      setIsLoading(true)
-      toast("Email verified successfully")
-      router.push("/login")
-    } catch (error) {
-      toast("Invalid OTP. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleResendOTP = async () => {
-    try {
-      setIsLoading(true)
-      setSeconds(120)
-      toast("OTP resent successfully")
-    } catch (error) {
-      toast("Failed to resend OTP. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
   }
 
   return (
@@ -102,15 +98,16 @@ export default function OTPVerificationPage() {
                     OTP will expire in: <span className="font-medium text-primary">{formatTime(seconds)}</span>
                   </p>
                 ) : (
-                  <Button variant="link" className="p-0" onClick={handleResendOTP} disabled={isLoading}>
+                  <Button variant="link" className="p-0" onClick={handleResendOTP} disabled={isResending}>
+                    {isResending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Resend OTP
                   </Button>
                 )}
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" type="submit" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button className="w-full" type="submit" disabled={isVerifying}>
+                {isVerifying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Verify
               </Button>
             </CardFooter>

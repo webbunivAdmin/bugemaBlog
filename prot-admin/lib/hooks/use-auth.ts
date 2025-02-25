@@ -39,7 +39,7 @@ export function useSignUp() {
       )
 
       setTimeout(() => {
-        router.push("/otp-verification")
+        router.push("/auth/otp-verification")
       }, 3000)
     },
   })
@@ -52,7 +52,6 @@ export function useSignIn() {
   return useMutation({
     mutationFn: async (formData: { email: string; password: string }) => {
       const { data } = await axios.post(`${API_URI}/auth/login`, formData)
-      // Store user data in both localStorage and cookies
       localStorage.setItem("user", JSON.stringify(data.user))
       Cookies.set("user", JSON.stringify(data.user), { expires: 7 }) // Expires in 7 days
       return data
