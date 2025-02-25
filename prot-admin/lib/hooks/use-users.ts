@@ -143,5 +143,27 @@ export function useApproveUser() {
       },
     })
   }
+
+  export function useMakeWriter() {
+    const queryClient = useQueryClient()
+  
+    return useMutation({
+      mutationFn: async (userId: string) => {
+        const { data } = await axios.patch(`${API_URI}/users/makewriter/${userId}`, null, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        return data
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["users"] })
+        toast.success("User account type updated successfully")
+      },
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message ?? "Failed to change account type")
+      },
+    })
+  }
   
 

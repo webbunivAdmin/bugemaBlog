@@ -8,10 +8,9 @@ import {
   updateUser,
   getUsers,
   approveUser,
-  suspendUser,
   makeAdmin,
   makeWriter,
-  suspendWriter
+  suspendUser
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -27,8 +26,8 @@ router.put("/update-user", userAuth, updateUser);
 router.patch('/approve/:id', userAuth, approveUser);
 router.patch('/suspend/:id', userAuth, suspendUser);
 router.patch('/makeadmin/:id', userAuth, makeAdmin);
-router.patch('/makewriter/:id', userAuth, makeAdmin);
-router.patch('/suspend/:id', userAuth, makeAdmin);
+router.patch('/makewriter/:id', userAuth, makeWriter);
+router.patch('/suspend/:id', userAuth, suspendUser);
 
 router.get("/get-user/:id?", getWriter);
 

@@ -229,77 +229,6 @@ export const suspendUser = async (req, res) => {
 };
 
 
-// export const suspendUser = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-
-//     const user = await Users.findById(id);
-
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     if (user.status === "Active" || user.status === "Pending") {
-//       user.status = "Suspended";
-//       await user.save();
-//     } else {
-//       return res.status(400).json({
-//         success: false,
-//         message: "User is already suspended",
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       message: "User suspended successfully",
-//       data: user,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Something went wrong" });
-//   }
-// };
-
-// export const changeAccountType = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { accountType } = req.body;
-
-//     // Ensure valid account types
-//     if (!["User", "Writer", "Admin"].includes(accountType)) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid account type",
-//       });
-//     }
-
-//     const user = await Users.findByIdAndUpdate(
-//       id,
-//       { accountType },
-//       { new: true }
-//     );
-
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       message: `Account type changed to ${accountType}`,
-//       data: user,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Something went wrong" });
-//   }
-// };
-
 export const makeAdmin = async (req, res) => {
   try {
     const { id } = req.params;
@@ -319,7 +248,7 @@ export const makeAdmin = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Account type changed to ${accountType}`,
+      message: "Account type changed to Admin",
       data: user,
     });
   } catch (error) {
@@ -347,7 +276,7 @@ export const makeWriter = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Account type changed to ${accountType}`,
+      message: "Account type changed to Writer",
       data: user,
     });
   } catch (error) {

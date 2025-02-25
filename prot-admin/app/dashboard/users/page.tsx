@@ -28,7 +28,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DataTable } from "@/components/ui/data-table"
-import { useUsers, useDeleteUser, useApproveUser, useSuspendUser, useChangeAccountType } from "@/lib/hooks/use-users"
+import { useUsers, useDeleteUser, useApproveUser, useSuspendUser, useChangeAccountType, useMakeWriter } from "@/lib/hooks/use-users"
 
 interface User {
   _id: string
@@ -49,6 +49,7 @@ export default function UsersPage() {
   const { mutate: approveUser } = useApproveUser()
   const { mutate: suspendUser } = useSuspendUser()
   const { mutate: changeAccountType } = useChangeAccountType()
+  const { mutate: makeWriter } = useMakeWriter()
 
   const columns: ColumnDef<User>[] = [
     {
@@ -130,6 +131,13 @@ export default function UsersPage() {
                   Approve User
                 </DropdownMenuItem>
               )}
+
+              {user.status === "Suspended" && (
+                <DropdownMenuItem onClick={() => approveUser(user._id)}>
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  Approve User
+                </DropdownMenuItem>
+              )}
               {/* {user.accountType === "Admin" && (
                 <DropdownMenuItem onClick={() => changeAccountType(user._id)}>
                 <Shield className="mr-2 h-4 w-4" />
@@ -143,10 +151,16 @@ export default function UsersPage() {
                   Change to Admin
                 </DropdownMenuItem>
               )}
+              {user.accountType === "Admin" && (
+                <DropdownMenuItem onClick={() => makeWriter(user._id)}>
+                  <Shield className="mr-2 h-4 w-4" />
+                  Change to Writer
+                </DropdownMenuItem>
+              )}
               {user.status !== "Pending" && (
                 <DropdownMenuItem onClick={() => suspendUser(user._id)}>
                   <Ban className="mr-2 h-4 w-4" />
-                  {user.status === "Active" ? "Suspend" : "Activate"} User
+                  {user.status === "Active" ? "Suspend" : "Suspend"} User
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
