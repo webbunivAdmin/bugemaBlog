@@ -4,6 +4,8 @@ import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/context/auth-context"
+import Cookies from "js-cookie"
 
 const API_URI = process.env.NEXT_PUBLIC_API_URL
 
@@ -23,7 +25,7 @@ export function useSignUp() {
       return data
     },
     onError: (error: any) => {
-      toast( error?.response?.data?.message ?? error.message)
+      toast(error?.response?.data?.message ?? error.message)
     },
     onSuccess: (data) => {
       toast(data?.message)
@@ -45,22 +47,23 @@ export function useSignUp() {
 
 export function useSignIn() {
   const router = useRouter()
+  const { signIn } = useAuth()
 
   return useMutation({
     mutationFn: async (formData: { email: string; password: string }) => {
       const { data } = await axios.post(`${API_URI}/auth/login`, formData)
-      localStorage.setItem("user", JSON.stringify(data))
+      // Store user data in both localStorage and cookies
+      localStorage.setItem("user", JSON.stringify(data.user))
+      Cookies.set("user", JSON.stringify(data.user), { expires: 7 }) // Expires in 7 days
       return data
     },
     onError: (error: any) => {
       toast(error?.response?.data?.message ?? error.message)
     },
     onSuccess: (data) => {
+      signIn(data.user)
       toast(data?.message)
-
-      setTimeout(() => {
-        router.push("/dashboard")
-      }, 1000)
+      router.push("/dashboard")
     },
   })
 }
@@ -74,14 +77,14 @@ export function useVerification() {
       return data
     },
     onError: (error: any) => {
-      toast( error?.response?.data?.message ?? error.message)
+      toast(error?.response?.data?.message ?? error.message)
     },
     onSuccess: (data) => {
       toast(data?.message)
 
       setTimeout(() => {
         localStorage.removeItem("otp_data")
-        router.push("/login")
+        router.push("/auth/login")
       }, 1000)
     },
   })

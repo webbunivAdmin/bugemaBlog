@@ -1,14 +1,15 @@
 import type React from "react"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { SidebarProvider } from "@/components/ui/sidebar"
+import { AuthProvider } from "@/lib/context/auth-context"
 import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata = {
-  title: "Blog Admin Dashboard",
-  description: "Admin dashboard for managing blog content and users",
+export const metadata: Metadata = {
+  title: "Blog Platform",
+  description: "A modern platform for creating and managing your blog",
 }
 
 export default function RootLayout({
@@ -19,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <AuthProvider>
           {children}
           <Toaster />
+        </AuthProvider>
       </body>
     </html>
   )
