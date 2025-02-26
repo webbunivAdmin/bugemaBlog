@@ -9,13 +9,13 @@ const API_URI = process.env.NEXT_PUBLIC_API_URL
 export interface Post {
   _id: string
   title: string
-  content: string
+  desc: string
   slug: string
   image?: string
-  category: string
+  cat: string
   status: boolean
-  state: "Draft" | "Published"
-  author: {
+  state: "Pending" | "Published" | "Idle"
+  user: {
     _id: string
     name: string
     image?: string
@@ -26,9 +26,9 @@ export interface Post {
 
 interface CreatePostData {
   title: string
-  content: string
+  desc: string
   image?: string
-  category: string
+  cat: string
 }
 
 interface UpdatePostData {
@@ -48,7 +48,7 @@ export function usePosts(status?: string) {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      return data.data as Post[]
+      return data.data
     },
   })
 }
@@ -73,7 +73,7 @@ export function useCreatePost() {
 
   return useMutation({
     mutationFn: async (data: CreatePostData) => {
-      const response = await axios.post(`${API_URI}/posts`, data, {
+      const response = await axios.post(`${API_URI}/posts/create-post`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -134,28 +134,48 @@ export function useDeletePost() {
   })
 }
 
-export function usePublishPost() {
+
+export function usePublishPosts() {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      const response = await axios.patch(
-        `${API_URI}/posts/${postId}/publish`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      return response.data
+      const { data } = await axios.patch(`${API_URI}/posts/publish-post/${postId}`, null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      return data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] })
-      toast.success("Post status updated successfully")
+      toast.success("Post published successfully")
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.message ?? "Failed to update post status")
+      toast.error(error?.response?.data?.message ?? "Failed to change account type")
+    },
+  })
+}
+
+
+export function useUnPublishPost() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (postId: string) => {
+      const { data } = await axios.patch(`${API_URI}/posts/unpublish-post/${postId}`, null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      return data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] })
+      toast.success("Post published successfully")
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message ?? "Failed to change account type")
     },
   })
 }

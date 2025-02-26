@@ -18,8 +18,8 @@ import { Card, CardContent } from "@/components/ui/card"
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  content: z.string().min(1, "Content is required"),
-  category: z.string().min(1, "Category is required"),
+  desc: z.string().min(1, "Content is required"),
+  cat: z.string().min(1, "Category is required"),
   image: z.string().optional(),
 })
 
@@ -35,8 +35,8 @@ export default function NewPostPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      content: "",
-      category: "",
+      desc: "",
+      cat: "",
       image: "",
     },
   })
@@ -98,7 +98,7 @@ export default function NewPostPage() {
                 />
                 <FormField
                   control={form.control}
-                  name="category"
+                  name="cat"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Category</FormLabel>
@@ -123,7 +123,7 @@ export default function NewPostPage() {
               </div>
               <FormField
                 control={form.control}
-                name="content"
+                name="desc"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Content</FormLabel>

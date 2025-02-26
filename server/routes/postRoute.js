@@ -11,8 +11,10 @@ import {
   getPost,
   getPostContent,
   getPosts,
+  publishPost,
   stats,
   updatePost,
+  unpublishPost,
 } from "../controllers/postController.js";
 
 const router = express.Router();
@@ -22,6 +24,8 @@ router.post("/admin-analytics", userAuth, stats);
 router.post("/admin-followers", userAuth, getFollowers);
 router.post("/admin-content", userAuth, getPostContent);
 router.post("/create-post", userAuth, createPost);
+router.patch("/publish-post/:id", userAuth, publishPost);
+router.patch("/unpublish-post/:id", userAuth, publishPost);
 
 // LIKE & COMMENT ON POST
 router.post("/comment/:id", userAuth, commentPost);

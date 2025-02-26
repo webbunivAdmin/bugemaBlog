@@ -40,7 +40,6 @@ import {
   Heading1,
   Heading2,
   Heading3,
-  ImageIcon,
   LinkIcon,
   Undo,
   Redo,
@@ -51,6 +50,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ImageUploadDialog } from "./image-upload-dialog"
 
 interface EditorProps {
   value: string
@@ -186,7 +186,7 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
                   editor
                     .chain()
                     .focus()
-                    .toggleHeading({ level: Number.parseInt(value) as any })
+                    .toggleHeading({ level: Number.parseInt(value) as 1 | 2 | 3 })
                     .run()
                 }
               }}
@@ -373,36 +373,11 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
               </PopoverContent>
             </Popover>
 
-            <Popover>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <Toggle size="sm">
-                        <ImageIcon className="h-4 w-4" />
-                      </Toggle>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>Image</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <PopoverContent className="w-80" align="start">
-                <div className="flex space-x-2">
-                  <Input placeholder="Paste image URL" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      if (imageUrl) {
-                        editor.chain().focus().setImage({ src: imageUrl }).run()
-                      }
-                      setImageUrl("")
-                    }}
-                  >
-                    Add
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
+            <ImageUploadDialog
+              onImageUploaded={(url) => {
+                editor.chain().focus().setImage({ src: url }).run()
+              }}
+            />
 
             <Tooltip>
               <TooltipTrigger asChild>

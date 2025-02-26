@@ -30,16 +30,16 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DataTable } from "@/components/ui/data-table"
-import { usePosts, useDeletePost, usePublishPost, type Post } from "@/lib/hooks/use-posts"
+import { usePosts, useDeletePost, usePublishPosts, type Post, useUnPublishPost } from "@/lib/hooks/use-posts"
 import { useAuthStore } from "@/lib/store"
 
 export default function PostsPage() {
   const [statusFilter, setStatusFilter] = React.useState<string>("")
   const { data: posts = [], isLoading } = usePosts(statusFilter)
   const { mutate: deletePost } = useDeletePost()
-  const { mutate: publishPost } = usePublishPost()
+  const { mutate: publishPost } = usePublishPosts()
+  const { mutate: unPublishPost } = useUnPublishPost()
   const user = useAuthStore((state) => state.user)
-
   const isAdmin = user?.accountType === "Admin"
 
   const columns: ColumnDef<Post>[] = [
@@ -57,13 +57,13 @@ export default function PostsPage() {
     {
       accessorKey: "category",
       header: "Category",
-      cell: ({ row }) => <Badge variant="outline">{row.original.category}</Badge>,
+      cell: ({ row }) => <Badge variant="outline">{row.original.cat}</Badge>,
     },
     {
       accessorKey: "author",
       header: "Author",
       cell: ({ row }) => {
-        const author = row.original.author
+        const author = row.original.user
         return (
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
@@ -79,7 +79,7 @@ export default function PostsPage() {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => (
-        <Badge variant={row.original.state === "Published" ? "success" : "secondary"}>{row.original.status}</Badge>
+        <Badge variant={row.original.state === "Published" ? "success" : "secondary"}>{row.original.state}</Badge>
       ),
     },
     {
@@ -98,8 +98,9 @@ export default function PostsPage() {
       id: "actions",
       cell: ({ row }) => {
         const post = row.original
-        const isAuthor = post.author._id === user?._id
-        const canPublish = isAdmin && post.state === "Draft"
+        const isAuthor = post.user._id === user?._id
+        const canPublish = isAdmin && post.state === "Pending"
+        const canUnPublish = isAdmin && post.state === "Idle" || post.state === "Published"
         const canEdit = isAdmin || isAuthor
 
         return (
@@ -128,7 +129,13 @@ export default function PostsPage() {
               {canPublish && (
                 <DropdownMenuItem onClick={() => publishPost(post._id)}>
                   <Send className="mr-2 h-4 w-4" />
-                  {post.state === "Draft" ? "Publish" : "Unpublish"}
+                  {post.state === "Pending" ? "Publish" : "Unpublish"}
+                </DropdownMenuItem>
+              )}
+              {canUnPublish && (
+                <DropdownMenuItem onClick={() => unPublishPost(post._id)}>
+                  <Send className="mr-2 h-4 w-4" />
+                  {post.state === "Published" ? "Unpublish" : "Publish"}
                 </DropdownMenuItem>
               )}
               {(isAdmin || isAuthor) && (
@@ -203,8 +210,9 @@ export default function PostsPage() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => setStatusFilter("")}>All</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter("published")}>Published</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter("draft")}>Drafts</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("Published")}>Published</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("Pending")}>Pending</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("Idle")}>Idle</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
