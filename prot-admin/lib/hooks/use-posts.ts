@@ -20,6 +20,8 @@ export interface Post {
     name: string
     image?: string
   }
+  views: string[]
+  comments: string[]
   createdAt: string
   updatedAt: string
 }

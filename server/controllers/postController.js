@@ -409,6 +409,23 @@ export const getComments = async (req, res, next) => {
   }
 };
 
+export const getCommentById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const comment = await Comments.findById(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Comment loaded successfully",
+      data: comment,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: error.message });
+  }
+}
+
 export const deletePost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;

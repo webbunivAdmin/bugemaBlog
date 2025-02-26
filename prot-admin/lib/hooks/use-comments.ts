@@ -8,7 +8,7 @@ const API_URI = process.env.NEXT_PUBLIC_API_URL
 
 export interface Comment {
   _id: string
-  content: string
+  desc: string
   post: string
   user: {
     _id: string
@@ -20,7 +20,7 @@ export interface Comment {
 }
 
 interface CreateCommentData {
-  content: string
+  desc: string
   postId: string
 }
 
@@ -43,10 +43,10 @@ export function useCreateComment() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ postId, content }: CreateCommentData) => {
+    mutationFn: async ({ postId, desc }: CreateCommentData) => {
       const response = await axios.post(
-        `${API_URI}/posts/${postId}/comments`,
-        { content },
+        `${API_URI}/posts/comment/${postId}`,
+        { desc },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -70,7 +70,7 @@ export function useDeleteComment() {
 
   return useMutation({
     mutationFn: async ({ postId, commentId }: { postId: string; commentId: string }) => {
-      const response = await axios.delete(`${API_URI}/posts/${postId}/comments/${commentId}`, {
+      const response = await axios.delete(`${API_URI}/posts/comment/${postId}/${commentId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -87,3 +87,18 @@ export function useDeleteComment() {
   })
 }
 
+
+export function useCommentById(commentId: string) {
+  return useQuery({
+    queryKey: ["comments", commentId],
+    queryFn: async () => {
+      const { data } = await axios.get(`${API_URI}/posts/comment-id/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      return data.data as Comment[]
+    },
+    enabled: !!commentId,
+  })
+}

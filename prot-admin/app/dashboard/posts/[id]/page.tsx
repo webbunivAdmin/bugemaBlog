@@ -141,11 +141,11 @@ export default function ViewPostPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Eye className="h-4 w-4" />
-                <span>1.2K views</span>
+                <span>{post.views.length} views</span>
               </div>
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
-                <span>8 comments</span>
+                <span>{post.comments.length} comments</span>
               </div>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function ViewPostPage() {
               <TabsTrigger value="comments" className="flex items-center gap-2">
                 Comments{" "}
                 <Badge variant="secondary" className="ml-2">
-                  8
+                  {post.comments.length}
                 </Badge>
               </TabsTrigger>
             </TabsList>
