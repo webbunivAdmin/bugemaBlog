@@ -6,11 +6,14 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/context/auth-context"
 import Cookies from "js-cookie"
+import { useAuthStore } from "@/lib/store"
 
 const API_URI = process.env.NEXT_PUBLIC_API_URL
 
 export function useSignUp() {
   const router = useRouter()
+  const setUser = useAuthStore((state) => state.setUser)
+  const setToken = useAuthStore((state) => state.setToken)
 
   return useMutation({
     mutationFn: async (formData: {
@@ -28,6 +31,8 @@ export function useSignUp() {
       toast(error?.response?.data?.message ?? error.message)
     },
     onSuccess: (data) => {
+      setUser(data.user)
+      setToken(data.token)
       toast(data?.message)
 
       localStorage.setItem(

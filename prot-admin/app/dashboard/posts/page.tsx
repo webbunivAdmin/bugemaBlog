@@ -31,14 +31,14 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DataTable } from "@/components/ui/data-table"
 import { usePosts, useDeletePost, usePublishPost, type Post } from "@/lib/hooks/use-posts"
-import { useAuth } from "@/lib/hooks/use-auth"
+import { useAuthStore } from "@/lib/store"
 
 export default function PostsPage() {
   const [statusFilter, setStatusFilter] = React.useState<string>("")
   const { data: posts = [], isLoading } = usePosts(statusFilter)
   const { mutate: deletePost } = useDeletePost()
   const { mutate: publishPost } = usePublishPost()
-  const { user } = useAuth()
+  const user = useAuthStore((state) => state.user)
 
   const isAdmin = user?.accountType === "Admin"
 
@@ -79,7 +79,7 @@ export default function PostsPage() {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => (
-        <Badge variant={row.original.status === "published" ? "success" : "secondary"}>{row.original.status}</Badge>
+        <Badge variant={row.original.state === "Published" ? "success" : "secondary"}>{row.original.status}</Badge>
       ),
     },
     {
@@ -99,7 +99,7 @@ export default function PostsPage() {
       cell: ({ row }) => {
         const post = row.original
         const isAuthor = post.author._id === user?._id
-        const canPublish = isAdmin && post.status === "draft"
+        const canPublish = isAdmin && post.state === "Draft"
         const canEdit = isAdmin || isAuthor
 
         return (
@@ -128,7 +128,7 @@ export default function PostsPage() {
               {canPublish && (
                 <DropdownMenuItem onClick={() => publishPost(post._id)}>
                   <Send className="mr-2 h-4 w-4" />
-                  {post.status === "draft" ? "Publish" : "Unpublish"}
+                  {post.state === "Draft" ? "Publish" : "Unpublish"}
                 </DropdownMenuItem>
               )}
               {(isAdmin || isAuthor) && (
