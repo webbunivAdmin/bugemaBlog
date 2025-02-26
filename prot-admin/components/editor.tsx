@@ -88,6 +88,11 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
     extensions: [
       StarterKit.configure({
         heading: false,
+        paragraph: {
+          HTMLAttributes: {
+            class: "whitespace-pre-wrap my-4",
+          },
+        },
       }),
       Heading.configure({
         levels: [1, 2, 3],
@@ -123,7 +128,7 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
       TableCell,
       CodeBlock.configure({
         HTMLAttributes: {
-          class: "rounded-md bg-muted p-4 font-mono",
+          class: "rounded-md bg-muted p-4 font-mono whitespace-pre-wrap my-4",
         },
       }),
       TaskList,
@@ -133,7 +138,16 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
     ],
     content: value,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+      const processedHtml = editor
+        .getHTML()
+        .replace(
+          /<p class="indent-preserve">(.*?)<\/p>/g,
+          (match, content) => `<p class="indent-preserve">${content.trim()}</p>\n`,
+        )
+      onChange(processedHtml)
+    },
+    parseOptions: {
+      preserveWhitespace: true,
     },
   })
 
@@ -486,7 +500,13 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
           editor={editor}
           className={cn(
             "min-h-[300px] w-full overflow-hidden rounded-b-lg px-3 py-2",
-            "prose prose-stone dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight",
+            "prose prose-stone dark:prose-invert max-w-none",
+            "prose-p:my-4 prose-p:whitespace-pre-wrap",
+            "prose-pre:whitespace-pre-wrap prose-pre:my-4 prose-pre:p-4",
+            "prose-blockquote:pl-4 prose-blockquote:border-l-2 prose-blockquote:my-4",
+            "prose-ul:pl-8 prose-ul:my-4 prose-ol:pl-8 prose-ol:my-4",
+            "prose-li:my-2",
+            "prose-headings:font-bold prose-headings:tracking-tight",
           )}
         />
       </div>

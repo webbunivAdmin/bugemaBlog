@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Github, Loader2, Mail } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -77,7 +77,7 @@ export default function RegisterPage() {
         </div>
       </div>
       <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 lg:w-[500px] sm:w-[350px]">
           <Card className="border-0 shadow-none lg:border lg:shadow-sm">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
@@ -198,7 +198,7 @@ export default function RegisterPage() {
               </div>
               <div className="text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
-                <Link href="/login" className="text-primary underline underline-offset-4 hover:text-primary/80">
+                <Link href="/auth/login" className="text-primary underline underline-offset-4 hover:text-primary/80">
                   Sign in
                 </Link>
               </div>

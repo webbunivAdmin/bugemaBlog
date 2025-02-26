@@ -113,7 +113,7 @@ export default function PostsPage() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem asChild>
-                <Link href={`/posts/${post._id}`}>
+                <Link href={`/dashboard/posts/${post._id}`}>
                   <Eye className="mr-2 h-4 w-4" />
                   View Post
                 </Link>
