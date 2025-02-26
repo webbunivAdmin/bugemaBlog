@@ -1,92 +1,216 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { PlusCircle, MoreHorizontal, Pencil, Trash, Eye } from "lucide-react"
+import * as React from "react"
+import type { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown, MoreHorizontal, Loader2, Eye, Pencil, Trash2, Send } from "lucide-react"
+import { format } from "date-fns"
 import Link from "next/link"
 
-const posts = [
-  { id: 1, title: "Getting Started with Next.js", author: "John Doe", status: "Published", views: 1200 },
-  { id: 2, title: "React Hooks Explained", author: "Jane Smith", status: "Draft", views: 0 },
-  { id: 3, title: "CSS Grid Layout", author: "Bob Johnson", status: "Pending Review", views: 50 },
-]
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DataTable } from "@/components/ui/data-table"
+import { usePosts, useDeletePost, usePublishPost, type Post } from "@/lib/hooks/use-posts"
+import { useAuth } from "@/lib/hooks/use-auth"
 
 export default function PostsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [statusFilter, setStatusFilter] = React.useState<string>("")
+  const { data: posts = [], isLoading } = usePosts(statusFilter)
+  const { mutate: deletePost } = useDeletePost()
+  const { mutate: publishPost } = usePublishPost()
+  const { user } = useAuth()
 
-  const filteredPosts = posts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.author.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  const isAdmin = user?.accountType === "Admin"
+
+  const columns: ColumnDef<Post>[] = [
+    {
+      accessorKey: "title",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            Title
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => <Badge variant="outline">{row.original.category}</Badge>,
+    },
+    {
+      accessorKey: "author",
+      header: "Author",
+      cell: ({ row }) => {
+        const author = row.original.author
+        return (
+          <div className="flex items-center gap-2">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={author.image} alt={author.name} />
+              <AvatarFallback>{author.name[0]}</AvatarFallback>
+            </Avatar>
+            <span>{author.name}</span>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge variant={row.original.status === "published" ? "success" : "secondary"}>{row.original.status}</Badge>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            Created
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => format(new Date(row.original.createdAt), "PPP"),
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const post = row.original
+        const isAuthor = post.author._id === user?._id
+        const canPublish = isAdmin && post.status === "draft"
+        const canEdit = isAdmin || isAuthor
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href={`/posts/${post._id}`}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  View Post
+                </Link>
+              </DropdownMenuItem>
+              {canEdit && (
+                <DropdownMenuItem asChild>
+                  <Link href={`/dashboard/posts/edit/${post._id}`}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit Post
+                  </Link>
+                </DropdownMenuItem>
+              )}
+              {canPublish && (
+                <DropdownMenuItem onClick={() => publishPost(post._id)}>
+                  <Send className="mr-2 h-4 w-4" />
+                  {post.status === "draft" ? "Publish" : "Unpublish"}
+                </DropdownMenuItem>
+              )}
+              {(isAdmin || isAuthor) && (
+                <>
+                  <DropdownMenuSeparator />
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete Post
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete the post and remove it from our
+                          servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deletePost(post._id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    )
+  }
 
   return (
-    <div className="p-8 space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Posts</h1>
+    <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      <div className="flex items-center justify-between space-y-2">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Posts</h2>
+          <p className="text-muted-foreground">
+            Manage your blog posts here. {isAdmin && "You can publish or unpublish posts."}
+          </p>
+        </div>
         <Button asChild>
-          <Link href="/dashboard/posts/new">
-            <PlusCircle className="mr-2 h-4 w-4" /> New Post
-          </Link>
+          <Link href="/dashboard/posts/new">Create Post</Link>
         </Button>
       </div>
-
-      <div className="flex items-center space-x-2">
-        <Input
-          placeholder="Search posts..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
-        />
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-1 items-center space-x-2">
+            <Input placeholder="Search posts..." className="w-[150px] lg:w-[250px]" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  Status
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setStatusFilter("")}>All</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("published")}>Published</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("draft")}>Drafts</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+        <DataTable columns={columns} data={posts} />
       </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Author</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Views</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredPosts.map((post) => (
-            <TableRow key={post.id}>
-              <TableCell>{post.title}</TableCell>
-              <TableCell>{post.author}</TableCell>
-              <TableCell>{post.status}</TableCell>
-              <TableCell>{post.views}</TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <Eye className="mr-2 h-4 w-4" />
-                      <span>View</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Pencil className="mr-2 h-4 w-4" />
-                      <span>Edit</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Trash className="mr-2 h-4 w-4" />
-                      <span>Delete</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </div>
   )
 }
