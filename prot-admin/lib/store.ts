@@ -8,6 +8,7 @@ type User = {
   lastName: string
   email: string
   accountType: "Admin" | "Writer"
+  status: "Pending" | "Active" | "Suspended"
   image?: string
 }
 

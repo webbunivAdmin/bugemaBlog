@@ -19,6 +19,7 @@ import {
   getRecentAdminPosts,
   getWriterRecentComments,
   getWriterRecentPosts,
+  getWriterPosts,
 } from "../controllers/postController.js";
 
 const router = express.Router();
@@ -33,6 +34,8 @@ router.patch("/unpublish-post/:id", userAuth, unpublishPost);
 router.get("/recent-admin", userAuth, getRecentAdminPosts);
 router.get("/writer-comments/:id", userAuth, getWriterRecentComments);
 router.get("/writer/:id", userAuth, getWriterRecentPosts);
+router.get("/writer-posts/:id", userAuth, getWriterPosts);
+
 
 
 // LIKE & COMMENT ON POST

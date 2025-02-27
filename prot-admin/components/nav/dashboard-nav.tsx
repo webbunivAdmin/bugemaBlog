@@ -16,11 +16,6 @@ const menuItems = [
         href: "/dashboard",
         icon: LayoutDashboard,
       },
-      {
-        title: "Analytics",
-        href: "/dashboard/analytics",
-        icon: BarChart,
-      },
     ],
   },
   {
@@ -30,11 +25,6 @@ const menuItems = [
         title: "Posts",
         href: "/dashboard/posts",
         icon: FileText,
-      },
-      {
-        title: "Comments",
-        href: "/dashboard/comments",
-        icon: MessageSquare,
       },
     ],
   },

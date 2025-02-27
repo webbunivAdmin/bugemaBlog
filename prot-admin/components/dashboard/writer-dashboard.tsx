@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useAuthStore } from "@/lib/store"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useAuth } from "@/lib/context/auth-context"
 
 export function WriterDashboard() {
-  const user = useAuthStore((state) => state.user)
+  const { user } = useAuth()
   const { data: stats, isLoading, error } = useWriterStats(user?._id ?? "")
   const [mounted, setMounted] = useState(false)
 

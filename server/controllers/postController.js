@@ -615,3 +615,33 @@ export const getWriterRecentPosts = async (req, res) => {
   }
 };
 
+export const getWriterPosts = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    const writerId = id;
+
+    const recentPosts = await Posts.find({ user: writerId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const postsWithStats = await Promise.all(
+      recentPosts.map(async (post) => {
+        const views = await Views.countDocuments({ post: post._id });
+        const commentsCount = await Comments.countDocuments({ post: post._id });
+
+        return {
+          ...post,
+          views,
+          commentsCount,
+        };
+      })
+    );
+
+    res.status(200).json({ data: postsWithStats });
+  } catch (error) {
+    console.error("Error in getWriterRecentPosts:", error);
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
