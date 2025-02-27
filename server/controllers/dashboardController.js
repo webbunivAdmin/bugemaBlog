@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Users from "../models/userModel.js";
 import Posts from "../models/postModel.js";
 import Comments from "../models/commentModel.js";
@@ -72,30 +73,44 @@ export const getAdminStats = async (req, res) => {
 
 export const getWriterStats = async (req, res) => {
   try {
-    const { id }= req.params;
-    const writerId = id;
+    const { id: writerId } = req.params;
+
+    // Validate the writerId
+    if (!mongoose.Types.ObjectId.isValid(writerId)) {
+      return res.status(400).json({ message: "Invalid writer ID" });
+    }
+
+    // Check if the writer exists
     const writer = await Users.findById(writerId);
     if (!writer) return res.status(404).json({ message: "Writer not found" });
 
+    // Only consider posts associated with this writer
     const totalPosts = await Posts.countDocuments({ user: writerId });
-    const totalViews = await Views.countDocuments({ user: writerId });
-    const totalComments = await Comments.countDocuments({ user: writerId });
     const draftPosts = await Posts.countDocuments({ user: writerId, state: "Pending" });
-
+    
+    // Total Views and Comments only on the writer's posts
+    const postIds = await Posts.find({ user: writerId }).distinct("_id");
+    const totalViews = await Views.countDocuments({ post: { $in: postIds } });
+    const totalComments = await Comments.countDocuments({ post: { $in: postIds } });
+    
+    // Average Read Time (You might want to calculate this more dynamically)
     const avgReadTime = 5;
 
+    // Views Growth over the past 7 days
     const viewsGrowth = await Views.countDocuments({
-      user: writerId,
+      post: { $in: postIds },
       createdAt: { $gte: new Date(new Date().setDate(new Date().getDate() - 7)) },
     });
 
+    // New Comments over the past 7 days
     const newComments = await Comments.countDocuments({
-      post: { $in: await Posts.find({ user: writerId }).distinct("_id") },
+      post: { $in: postIds },
       createdAt: { $gte: new Date(new Date().setDate(new Date().getDate() - 7)) },
     });
 
+    // Views Over Time for this writer's posts
     const viewsOverTime = await Views.aggregate([
-      { $match: { user: writerId } },
+      { $match: { post: { $in: postIds } } },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -105,8 +120,9 @@ export const getWriterStats = async (req, res) => {
       { $sort: { _id: 1 } },
     ]);
 
+    // Top 5 Posts by Views for this writer
     const topPosts = await Posts.aggregate([
-      { $match: { user: writerId } },
+      { $match: { user: new mongoose.Types.ObjectId(writerId) } },
       {
         $lookup: {
           from: "views",
@@ -138,6 +154,8 @@ export const getWriterStats = async (req, res) => {
       topPosts,
     });
   } catch (error) {
+    console.error("Error in getWriterStats:", error);
     res.status(500).json({ message: "Server Error", error });
   }
 };
+

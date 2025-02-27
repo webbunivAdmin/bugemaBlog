@@ -1,49 +1,16 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
 import { format } from "date-fns"
 import Link from "next/link"
 import { CheckCircle, XCircle, Eye } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-interface RecentComment {
-  id: string
-  author: {
-    name: string
-    image?: string
-  }
-  post: {
-    id: string
-    title: string
-  }
-  content: string
-  status: "Approved" | "Pending" | "Rejected"
-  createdAt: string
-}
+import { useAdminRecentComments } from "@/lib/hooks/use-dashboard"
 
 export function AdminRecentComments() {
-  const {
-    data: recentComments,
-    isLoading,
-    error,
-  } = useQuery<RecentComment[]>({
-    queryKey: ["adminRecentComments"],
-    queryFn: async () => {
-      const { data } = await axios.get(`${API_URL}/comments/recent-admin`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      return data
-    },
-  })
+  const { data: recentComments, isLoading, error } = useAdminRecentComments()
 
   if (error) return <div>Error loading recent comments</div>
 
@@ -54,7 +21,6 @@ export function AdminRecentComments() {
           <TableHead>Author</TableHead>
           <TableHead>Post</TableHead>
           <TableHead>Comment</TableHead>
-          <TableHead>Status</TableHead>
           <TableHead>Date</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
@@ -84,35 +50,22 @@ export function AdminRecentComments() {
               </TableRow>
             ))
           : recentComments?.map((comment) => (
-              <TableRow key={comment.id}>
+              <TableRow key={comment._id}>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
-                      <AvatarImage src={comment.author.image} />
-                      <AvatarFallback>{comment.author.name[0]}</AvatarFallback>
+                      <AvatarImage src={comment.user.image} />
+                      <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
                     </Avatar>
-                    <span>{comment.author.name}</span>
+                    <span>{comment.user.name}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Link href={`/dashboard/posts/view/${comment.post.id}`} className="hover:underline">
+                  <Link href={`/dashboard/posts/view/${comment.post._id}`} className="hover:underline">
                     {comment.post.title}
                   </Link>
                 </TableCell>
-                <TableCell className="max-w-[300px] truncate">{comment.content}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      comment.status === "Approved"
-                        ? "default"
-                        : comment.status === "Pending"
-                          ? "secondary"
-                          : "destructive"
-                    }
-                  >
-                    {comment.status}
-                  </Badge>
-                </TableCell>
+                <TableCell className="max-w-[300px] truncate">{comment.desc}</TableCell>
                 <TableCell>{format(new Date(comment.createdAt), "MMM dd, yyyy")}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-1">

@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation"
 import { LayoutDashboard, FileText, Users, MessageSquare, Settings, BarChart } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/lib/context/auth-context"
 
-const adminMenuItems = [
+const menuItems = [
   {
     title: "Overview",
     items: [
@@ -44,6 +45,7 @@ const adminMenuItems = [
         title: "Users",
         href: "/dashboard/users",
         icon: Users,
+        adminOnly: true,
       },
       {
         title: "Settings",
@@ -56,10 +58,19 @@ const adminMenuItems = [
 
 export function DashboardNav() {
   const pathname = usePathname()
+  const { user } = useAuth()
+  const isAdmin = user?.accountType === "Admin"
+
+  const filteredMenuItems = menuItems
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.adminOnly || isAdmin),
+    }))
+    .filter((group) => group.items.length > 0)
 
   return (
     <div className="flex flex-col gap-4 p-2">
-      {adminMenuItems.map((group) => (
+      {filteredMenuItems.map((group) => (
         <div key={group.title} className="flex flex-col gap-2">
           <h4 className="px-2 text-xs font-semibold uppercase text-muted-foreground">{group.title}</h4>
           <div className="flex flex-col gap-1">

@@ -1,7 +1,5 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
 import { format } from "date-fns"
 import Link from "next/link"
 import { Eye, MessageSquare, Edit } from "lucide-react"
@@ -9,35 +7,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-interface WriterPost {
-  id: string
-  title: string
-  category: string
-  status: string
-  views: number
-  comments: number
-  createdAt: string
-}
+import { useAuthStore } from "@/lib/store"
+import { useWriterRecentPosts } from "@/lib/hooks/use-dashboard"
 
 export function WriterRecentPosts() {
-  const {
-    data: writerPosts,
-    isLoading,
-    error,
-  } = useQuery<WriterPost[]>({
-    queryKey: ["writerRecentPosts"],
-    queryFn: async () => {
-      const { data } = await axios.get(`${API_URL}/posts/writer`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      return data
-    },
-  })
+  const user = useAuthStore((state) => state.user)
+  const { data: writerPosts, isLoading, error } = useWriterRecentPosts(user?._id ?? "")
+  console.log(writerPosts)
 
   if (error) return <div>Error loading your posts</div>
 
@@ -82,20 +58,20 @@ export function WriterRecentPosts() {
               </TableRow>
             ))
           : writerPosts?.map((post) => (
-              <TableRow key={post.id}>
+              <TableRow key={post._id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="capitalize">
-                    {post.category}
+                    {post.cat}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <Badge
                     variant={
-                      post.status === "Published" ? "default" : post.status === "Pending" ? "secondary" : "outline"
+                      post.state === "Published" ? "success" : post.state === "Pending" ? "secondary" : "outline"
                     }
                   >
-                    {post.status}
+                    {post.state}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -107,20 +83,20 @@ export function WriterRecentPosts() {
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <MessageSquare className="h-3 w-3 text-muted-foreground" />
-                    {post.comments}
+                    {post.commentsCount}
                   </div>
                 </TableCell>
                 <TableCell>{format(new Date(post.createdAt), "MMM dd, yyyy")}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-1">
                     <Button asChild size="sm" variant="ghost">
-                      <Link href={`/dashboard/posts/view/${post.id}`}>
+                      <Link href={`/dashboard/posts/view/${post._id}`}>
                         <Eye className="h-4 w-4 mr-1" />
                         View
                       </Link>
                     </Button>
                     <Button asChild size="sm" variant="ghost">
-                      <Link href={`/dashboard/posts/edit/${post.id}`}>
+                      <Link href={`/dashboard/posts/edit/${post._id}`}>
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Link>

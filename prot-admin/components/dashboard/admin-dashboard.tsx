@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { parseISO } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { FileText, Users, Eye, TrendingUp } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
@@ -79,12 +80,22 @@ export function AdminDashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={stats?.viewsOverTime ?? []} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tickFormatter={(date) => format(new Date(date), "MMM dd")} />
+                    <XAxis 
+                      dataKey="_id" 
+                      tickFormatter={(date) => {
+                        const validDate = parseISO(date)
+                        return isNaN(validDate.getTime()) ? "" : format(validDate, "MMM dd")
+                      }} 
+                    />
                     <YAxis />
                     <Tooltip
-                      labelFormatter={(date) => format(new Date(date), "MMMM dd, yyyy")}
+                      labelFormatter={(date) => {
+                        const validDate = parseISO(date)
+                        return isNaN(validDate.getTime()) ? "Invalid Date" : format(validDate, "MMMM dd, yyyy")
+                      }}
                       formatter={(value) => [value, "Views"]}
                     />
+
                     <Area type="monotone" dataKey="views" stroke="#8884d8" fill="#8884d8" />
                   </AreaChart>
                 </ResponsiveContainer>

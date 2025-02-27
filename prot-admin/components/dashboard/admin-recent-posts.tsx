@@ -1,7 +1,5 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
 import { format } from "date-fns"
 import Link from "next/link"
 import { Eye, MessageSquare } from "lucide-react"
@@ -9,36 +7,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-interface RecentPost {
-  id: string
-  title: string
-  author: string
-  category: string
-  status: string
-  views: number
-  comments: number
-  createdAt: string
-}
+import { useAdminRecentPosts } from "@/lib/hooks/use-dashboard"
 
 export function AdminRecentPosts() {
-  const {
-    data: recentPosts,
-    isLoading,
-    error,
-  } = useQuery<RecentPost[]>({
-    queryKey: ["adminRecentPosts"],
-    queryFn: async () => {
-      const { data } = await axios.get(`${API_URL}/posts/recent-admin`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      return data
-    },
-  })
+  const { data: recentPosts, isLoading, error } = useAdminRecentPosts()
 
   if (error) return <div>Error loading recent posts</div>
 
@@ -87,9 +59,9 @@ export function AdminRecentPosts() {
               </TableRow>
             ))
           : recentPosts?.map((post) => (
-              <TableRow key={post.id}>
+              <TableRow key={post._id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
-                <TableCell>{post.author}</TableCell>
+                <TableCell>{post.author.name}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="capitalize">
                     {post.category}
@@ -113,13 +85,13 @@ export function AdminRecentPosts() {
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <MessageSquare className="h-3 w-3 text-muted-foreground" />
-                    {post.comments}
+                    {post.commentsCount}
                   </div>
                 </TableCell>
                 <TableCell>{format(new Date(post.createdAt), "MMM dd, yyyy")}</TableCell>
                 <TableCell className="text-right">
                   <Button asChild size="sm" variant="ghost">
-                    <Link href={`/dashboard/posts/view/${post.id}`}>
+                    <Link href={`/dashboard/posts/view/${post._id}`}>
                       <Eye className="h-4 w-4 mr-1" />
                       View
                     </Link>

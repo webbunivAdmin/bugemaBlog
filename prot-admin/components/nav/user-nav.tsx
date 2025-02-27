@@ -13,10 +13,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogOut, Settings, User } from "lucide-react"
 import { useAuthStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/context/auth-context"
 
 export function UserNav() {
   const router = useRouter()
-  const user = useAuthStore((state) => state.user)
+  const { user } = useAuth()
   const clearAuth = useAuthStore((state) => state.clearAuth)
 
   const handleLogout = () => {

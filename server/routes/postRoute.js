@@ -16,6 +16,9 @@ import {
   updatePost,
   unpublishPost,
   getCommentById,
+  getRecentAdminPosts,
+  getWriterRecentComments,
+  getWriterRecentPosts,
 } from "../controllers/postController.js";
 
 const router = express.Router();
@@ -27,6 +30,10 @@ router.post("/admin-content", userAuth, getPostContent);
 router.post("/create-post", userAuth, createPost);
 router.patch("/publish-post/:id", userAuth, publishPost);
 router.patch("/unpublish-post/:id", userAuth, unpublishPost);
+router.get("/recent-admin", userAuth, getRecentAdminPosts);
+router.get("/writer-comments/:id", userAuth, getWriterRecentComments);
+router.get("/writer/:id", userAuth, getWriterRecentPosts);
+
 
 // LIKE & COMMENT ON POST
 router.post("/comment/:id", userAuth, commentPost);

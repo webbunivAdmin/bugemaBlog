@@ -524,3 +524,94 @@ export const unpublishPost = async (req, res) => {
   }
 };
 
+export const getRecentAdminPosts = async (req, res) => {
+  try {
+    const recentPosts = await Posts.find()
+      .sort({ createdAt: -1 }) // Sort by most recent
+      .limit(10) // Limit to 10 posts
+      .populate("user", "name") // Get author name
+      .populate("comments", "_id") // Get comments count
+      .populate("views", "_id") // Get views count
+      .exec();
+
+    const formattedPosts = recentPosts.map((post) => ({
+      id: post._id,
+      title: post.title,
+      author: post.user.name,
+      category: post.cat,
+      status: post.state,
+      views: post.views.length,
+      comments: post.comments.length,
+      createdAt: post.createdAt,
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: formattedPosts,
+    });
+  } catch (error) {
+    console.error("Error fetching recent posts:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error,
+    });
+  }
+};
+
+export const getWriterRecentComments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const writerId = id;
+
+    // Get the writer's post IDs
+    const postIds = await Posts.find({ user: writerId }).distinct("_id");
+
+    // Get the recent comments on these posts
+    const recentComments = await Comments.find({ post: { $in: postIds } })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate("post", "title")
+      .populate("user", "name");
+
+    res.status(200).json({ data: recentComments });
+  } catch (error) {
+    console.error("Error in getWriterRecentComments:", error);
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
+export const getWriterRecentPosts = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    const writerId = id;
+
+    // Get the writer's recent posts
+    const recentPosts = await Posts.find({ user: writerId })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("_id title cat state createdAt")
+      .lean();
+
+    // Add views and comments count to each post
+    const postsWithStats = await Promise.all(
+      recentPosts.map(async (post) => {
+        const views = await Views.countDocuments({ post: post._id });
+        const commentsCount = await Comments.countDocuments({ post: post._id });
+
+        return {
+          ...post,
+          views,
+          commentsCount,
+        };
+      })
+    );
+
+    res.status(200).json({ data: postsWithStats });
+  } catch (error) {
+    console.error("Error in getWriterRecentPosts:", error);
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
