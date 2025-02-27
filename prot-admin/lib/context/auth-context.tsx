@@ -11,6 +11,7 @@ interface User {
   email: string
   image?: string
   accountType: "Admin" | "Writer"
+  status: "Pending" | "Active" | "Suspended"
   emailVerified: boolean
 }
 

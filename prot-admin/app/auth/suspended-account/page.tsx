@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useAuth } from "@/lib/context/auth-context"
 
 export default function SuspendedAccountPage() {
   const router = useRouter()
-  const user = useAuthStore((state) => state.user)
+  const { user } = useAuth()
   const logout = useAuthStore((state) => state.clearAuth)
 
   useEffect(() => {

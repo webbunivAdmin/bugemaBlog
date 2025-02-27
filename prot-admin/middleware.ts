@@ -1,61 +1,65 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
+// Define protected and auth routes
+const protectedRoutes = ["/dashboard"]
+const authRoutes = {
+  login: "/auth/login",
+  register: "/auth/register",
+  otp: "/auth/otp-verification",
+  pending: "/auth/pending-account",
+  suspended: "/auth/suspended-account",
+}
+
 export function middleware(request: NextRequest) {
   const userCookie = request.cookies.get("user")?.value
   const otpCookie = request.cookies.get("otp_data")?.value
   const path = request.nextUrl.pathname
 
-  // Define path types
-  const isAuthPage = path.startsWith("/auth")
-  const isOTPPage = path.startsWith("/otp-verification")
-  const isDashboardPage = path.startsWith("/dashboard")
-  const isPendingPage = path === "/auth/pending-account"
-  const isSuspendedPage = path === "/auth/suspended-account"
+  const redirect = (path: string) => NextResponse.redirect(new URL(path, request.url))
 
-  // If no user cookie and trying to access protected routes
-  if (!userCookie && !isAuthPage && !isOTPPage) {
-    return NextResponse.redirect(new URL("/auth/login", request.url))
+  const isAuthRoute = Object.values(authRoutes).some(route => path.startsWith(route))
+  const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route))
+
+  if (!userCookie && isProtectedRoute) {
+    return redirect(authRoutes.login)
   }
 
-  // If there is a user
   if (userCookie) {
     try {
       const user = JSON.parse(userCookie)
 
-      // Handle suspended users
-      if (user.status === "Suspended") {
-        if (!isSuspendedPage) {
-          return NextResponse.redirect(new URL("/auth/suspended-account", request.url))
+      switch (user.status) {
+        case "Suspended":
+          if (path !== authRoutes.suspended) {
+            return redirect(authRoutes.suspended)
+          }
+          break
+
+        case "Pending":
+          if (path !== authRoutes.pending && path !== authRoutes.otp) {
+            return redirect(authRoutes.pending)
+          }
+          break
+
+        case "Active":
+          if (isAuthRoute) {
+            return redirect("/dashboard")
+          }
+          break
+      }
+
+      if (path === authRoutes.otp) {
+        if (!otpCookie) {
+          return redirect(authRoutes.login)
         }
       }
-
-      // Handle pending users
-      if (user.status === "Pending") {
-        if (!isPendingPage && !isOTPPage) {
-          return NextResponse.redirect(new URL("/auth/pending-account", request.url))
-        }
+      if ((path === authRoutes.login || path === authRoutes.register) && user.status === "Active") {
+        return redirect("/dashboard")
       }
 
-      // Handle active users
-      if (user.status === "Active") {
-        if (isPendingPage || isSuspendedPage) {
-          return NextResponse.redirect(new URL("/dashboard", request.url))
-        }
-      }
-
-      // Prevent authenticated users from accessing auth pages
-      if (isAuthPage && !isOTPPage) {
-        return NextResponse.redirect(new URL("/dashboard", request.url))
-      }
-
-      // Handle OTP verification access
-      if (isOTPPage && !otpCookie) {
-        return NextResponse.redirect(new URL("/auth/login", request.url))
-      }
     } catch (error) {
-      // If user cookie is invalid, clear it and redirect to login
-      const response = NextResponse.redirect(new URL("/auth/login", request.url))
+      const response = redirect(authRoutes.login)
       response.cookies.delete("user")
       return response
     }
@@ -65,6 +69,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/auth/:path*", "/auth/otp-verification", "/auth/pending-account", "/auth/suspended-account"],
+  matcher: [
+    "/dashboard/:path*",
+    "/auth/:path*"
+  ]
 }
-

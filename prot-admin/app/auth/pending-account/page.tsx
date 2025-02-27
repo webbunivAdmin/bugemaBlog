@@ -7,10 +7,11 @@ import { useAuthStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/lib/context/auth-context"
 
 export default function PendingAccountPage() {
   const router = useRouter()
-  const user = useAuthStore((state) => state.user)
+    const { user } = useAuth()
   const logout = useAuthStore((state) => state.clearAuth)
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export default function PendingAccountPage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Name</span>
                 <span className="text-sm font-medium">
-                  {user.firstName} {user.lastName}
+                   {user.name}
                 </span>
               </div>
             </div>
