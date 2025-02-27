@@ -9,7 +9,7 @@ interface User {
   lastName: string
   email: string
   image?: string
-  role: "Admin" | "Writer"
+  accountType: "Admin" | "Writer"
   emailVerified: boolean
 }
 
