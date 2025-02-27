@@ -409,6 +409,23 @@ export const getComments = async (req, res, next) => {
   }
 };
 
+export const getCommentById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const comment = await Comments.findById(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Comment loaded successfully",
+      data: comment,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: error.message });
+  }
+}
+
 export const deletePost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
@@ -450,3 +467,60 @@ export const deleteComment = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const publishPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await Posts.findByIdAndUpdate(
+      id,
+      { state: "Published" },
+      { new: true }
+    );
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "post Published successfully",
+      data: post,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const unpublishPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await Posts.findByIdAndUpdate(
+      id,
+      { state: "Idle" },
+      { new: true }
+    );
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Post Unpublished successfully",
+      data: post,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+

@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, select: true },
     provider: { type: String, default: "Codewave" },
     followers: [{ type: Schema.Types.ObjectId, ref: "Followers" }],
+    status: { type: String, default: "Pending" },
   },
   { timestamps: true }
 );

@@ -118,7 +118,7 @@ export const updateUser = async (req, res, next) => {
 
     user.password = undefined;
 
-    res.status(200).json({
+    return res.status(200).json({
       sucess: true,
       message: "User updated successfully",
       user,
@@ -155,5 +155,132 @@ export const getWriter = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "Something went wrong" });
+  }
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await Users.find();
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+// Approve User
+export const approveUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Users.findByIdAndUpdate(
+      id,
+      { status: "Active" },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User approved successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const suspendUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Users.findByIdAndUpdate(
+      id,
+      { status: "Suspended" },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User Suspended successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+
+export const makeAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Users.findByIdAndUpdate(
+      id,
+      { accountType: "Admin" },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Account type changed to Admin",
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const makeWriter = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Users.findByIdAndUpdate(
+      id,
+      { accountType: "Writer" },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Account type changed to Writer",
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
