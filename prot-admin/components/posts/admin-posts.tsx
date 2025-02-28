@@ -98,10 +98,9 @@ export default function AdminPostsTable() {
       id: "actions",
       cell: ({ row }) => {
         const post = row.original
-        const isAuthor = post.user._id === user?._id
         const canPublish = isAdmin && post.state === "Pending"
-        const canUnPublish = isAdmin && post.state === "Idle" || post.state === "Published"
-        const canEdit = isAdmin || isAuthor
+        const canUnPublish = isAdmin && (post.state === "Idle" || post.state === "Published")
+        const canEdit = isAdmin
 
         return (
           <DropdownMenu>
@@ -138,7 +137,7 @@ export default function AdminPostsTable() {
                   {post.state === "Published" ? "Unpublish" : "Publish"}
                 </DropdownMenuItem>
               )}
-              {(isAdmin || isAuthor) && (
+              {(isAdmin) && (
                 <>
                   <DropdownMenuSeparator />
                   <AlertDialog>
