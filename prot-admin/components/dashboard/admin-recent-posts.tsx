@@ -61,7 +61,7 @@ export function AdminRecentPosts() {
           : recentPosts?.map((post) => (
               <TableRow key={post._id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
-                <TableCell>{post.author.name}</TableCell>
+                <TableCell>{post.user?.name}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="capitalize">
                     {post.category}
@@ -85,7 +85,7 @@ export function AdminRecentPosts() {
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <MessageSquare className="h-3 w-3 text-muted-foreground" />
-                    {post.commentsCount}
+                    {post.comments.toLocaleString()}
                   </div>
                 </TableCell>
                 <TableCell>{format(new Date(post.createdAt), "MMM dd, yyyy")}</TableCell>

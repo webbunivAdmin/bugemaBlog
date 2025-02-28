@@ -64,10 +64,11 @@ export function useWriterStats(writerId: string) {
 interface RecentPost {
   _id: string
   title: string
-  author: {
+  user: {
     _id: string
     name: string
   }
+  comments: number
   category: string
   status: string
   views: number
