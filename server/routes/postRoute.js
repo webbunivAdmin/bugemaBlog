@@ -11,8 +11,11 @@ import {
   getPost,
   getPostContent,
   getPosts,
+  publishPost,
   stats,
   updatePost,
+  unpublishPost,
+  getCommentById,
 } from "../controllers/postController.js";
 
 const router = express.Router();
@@ -22,6 +25,8 @@ router.post("/admin-analytics", userAuth, stats);
 router.post("/admin-followers", userAuth, getFollowers);
 router.post("/admin-content", userAuth, getPostContent);
 router.post("/create-post", userAuth, createPost);
+router.patch("/publish-post/:id", userAuth, publishPost);
+router.patch("/unpublish-post/:id", userAuth, unpublishPost);
 
 // LIKE & COMMENT ON POST
 router.post("/comment/:id", userAuth, commentPost);
@@ -34,6 +39,8 @@ router.get("/", getPosts);
 router.get("/popular", getPopularContents);
 router.get("/:postId", getPost);
 router.get("/comments/:postId", getComments);
+router.get("/comment-id/:id", getCommentById);
+
 
 // DELETE POSTS ROUTES
 router.delete("/:id", userAuth, deletePost);

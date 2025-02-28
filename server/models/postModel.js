@@ -11,6 +11,7 @@ const postSchema = new mongoose.Schema(
     user: { type: Schema.Types.ObjectId, ref: "Users" },
     comments: [{ type: Schema.Types.ObjectId, ref: "Comments" }],
     status: { type: Boolean, default: true },
+    state: { type: String, default: "Pending" },
   },
   { timestamps: true }
 );
