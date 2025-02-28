@@ -31,8 +31,10 @@ export default function SuspendedAccountPage() {
   }
 
   const handleContactSupport = () => {
-    window.location.href = `mailto:support@example.com?subject=Account Suspension Appeal - ${user?.email}`
+    const subject = encodeURIComponent(`Account Suspension Appeal - ${user?.email}`);
+    window.location.href = `https://mail.google.com/mail/?view=cm&fs=1&to=danientege785@gmail.com&su=${subject}`;
   }
+
 
   if (!user) return null
 
@@ -76,7 +78,7 @@ export default function SuspendedAccountPage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Name</span>
                 <span className="text-sm font-medium">
-                  {user.firstName} {user.lastName}
+                  {user.name}
                 </span>
               </div>
             </div>
