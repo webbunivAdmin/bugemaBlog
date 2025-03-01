@@ -7,8 +7,8 @@ import { Providers } from "./providers"
 
 
 export const metadata: Metadata = {
-  title: "Blog Platform",
-  description: "A modern platform for creating and managing your blog",
+  title: "Bugema University Newsletter",
+  description: "Bugema University Newsletter",
 }
 
 export default function RootLayout({
