@@ -62,7 +62,7 @@ export function useWriterStats(writerId: string) {
 }
 
 interface RecentPost {
-  _id: string
+  id: string
   title: string
   user: {
     _id: string
@@ -149,7 +149,7 @@ export function useWriterRecentComments(writerId: string) {
   }
   
   interface WriterPost {
-    _id: string
+    id: string
     title: string
     cat: string
     state: string

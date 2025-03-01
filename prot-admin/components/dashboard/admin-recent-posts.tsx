@@ -59,7 +59,7 @@ export function AdminRecentPosts() {
               </TableRow>
             ))
           : recentPosts?.map((post) => (
-              <TableRow key={post._id}>
+              <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>{post.user?.name}</TableCell>
                 <TableCell>
@@ -91,7 +91,7 @@ export function AdminRecentPosts() {
                 <TableCell>{format(new Date(post.createdAt), "MMM dd, yyyy")}</TableCell>
                 <TableCell className="text-right">
                   <Button asChild size="sm" variant="ghost">
-                    <Link href={`/dashboard/posts/view/${post._id}`}>
+                    <Link href={`/dashboard/posts/${post.id}`}>
                       <Eye className="h-4 w-4 mr-1" />
                       View
                     </Link>
