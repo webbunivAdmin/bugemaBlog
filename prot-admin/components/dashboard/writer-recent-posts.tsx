@@ -57,7 +57,7 @@ export function WriterRecentPosts() {
               </TableRow>
             ))
           : writerPosts?.map((post) => (
-              <TableRow key={post._id}>
+              <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="capitalize">
@@ -89,13 +89,13 @@ export function WriterRecentPosts() {
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-1">
                     <Button asChild size="sm" variant="ghost">
-                      <Link href={`/dashboard/posts/view/${post._id}`}>
+                      <Link href={`/dashboard/posts/${post.id}`}>
                         <Eye className="h-4 w-4 mr-1" />
                         View
                       </Link>
                     </Button>
                     <Button asChild size="sm" variant="ghost">
-                      <Link href={`/dashboard/posts/edit/${post._id}`}>
+                      <Link href={`/dashboard/posts/edit/${post.id}`}>
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Link>
