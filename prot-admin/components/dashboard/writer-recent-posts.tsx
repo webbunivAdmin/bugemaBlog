@@ -13,7 +13,6 @@ import { useWriterRecentPosts } from "@/lib/hooks/use-dashboard"
 export function WriterRecentPosts() {
   const user = useAuthStore((state) => state.user)
   const { data: writerPosts, isLoading, error } = useWriterRecentPosts(user?._id ?? "")
-  console.log(writerPosts)
 
   if (error) return <div>Error loading your posts</div>
 

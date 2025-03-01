@@ -24,7 +24,14 @@ export function AdminDashboard() {
     return <div className="p-4 text-destructive">Error loading dashboard data. Please try again later.</div>
   }
 
-  const StatCard = ({ title, value, icon: Icon, description }) => (
+  interface StatCardProps {
+    title: string;
+    value: number;
+    icon: React.ComponentType<{ className?: string }>;
+    description?: string;
+  }
+
+  const StatCard = ({ title, value, icon: Icon, description }: StatCardProps) => (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>

@@ -29,7 +29,7 @@ export function WriterDashboard() {
     return <div className="p-4 text-destructive">Error loading dashboard data. Please try again later.</div>
   }
 
-  const StatCard = ({ title, value, icon: Icon, description }) => (
+  const StatCard = ({ title, value, icon: Icon, description }: { title: string, value: number | string, icon: React.ComponentType<{ className?: string }>, description?: string }) => (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>

@@ -3,31 +3,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, BookOpen, Users, GraduationCap } from "lucide-react"
+import { ArrowRight, BookOpen, Users, GraduationCap, Newspaper, BarChart3 } from "lucide-react"
 
-const features = [
-  {
-    icon: BookOpen,
-    title: "Quality Education",
-    description: "Offering a wide range of programs with a focus on academic excellence and practical skills.",
-  },
-  {
-    icon: Users,
-    title: "Diverse Community",
-    description: "A multicultural environment fostering global perspectives and lifelong friendships.",
-  },
-  {
-    icon: GraduationCap,
-    title: "Career Readiness",
-    description: "Preparing students for successful careers through internships and industry partnerships.",
-  },
-]
-
-const stats = [
-  { id: 1, name: "Students", value: "5,000+" },
-  { id: 2, name: "Programs", value: "50+" },
-  { id: 3, name: "Years of Excellence", value: "70+" },
-]
 
 export default function HomePage() {
   const features = [

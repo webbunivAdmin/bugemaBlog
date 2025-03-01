@@ -60,7 +60,7 @@ export default function LoginPage() {
     }
 
     // Create initial particles
-    const particles = []
+    const particles: HTMLDivElement[] = []
     for (let i = 0; i < 20; i++) {
       const particle = createParticle()
       if (particle && backgroundRef.current) {

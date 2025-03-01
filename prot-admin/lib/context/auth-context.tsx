@@ -4,6 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 
 interface User {
+  _id: string
   id: string
   firstName: string
   lastName: string
