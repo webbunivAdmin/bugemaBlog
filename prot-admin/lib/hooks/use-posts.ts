@@ -26,6 +26,26 @@ export interface Post {
   updatedAt: string
 }
 
+export interface WriterPosts {
+  _id: string
+  title: string
+  desc: string
+  slug: string
+  image?: string
+  cat: string
+  status: boolean
+  state: "Pending" | "Published" | "Idle"
+  user: {
+    _id: string
+    name: string
+    image?: string
+  }
+  createdAt: string
+  updatedAt: string
+  views: number
+  comments: number
+}
+
 interface CreatePostData {
   title: string
   desc: string
@@ -178,6 +198,20 @@ export function useUnPublishPost() {
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message ?? "Failed to change account type")
+    },
+  })
+}
+
+export function useWriterPosts(writerId: string) {
+  return useQuery<WriterPosts[]>({
+    queryKey: ["writerRecentPosts"],
+    queryFn: async () => {
+      const { data } = await axios.get(`${API_URI}/posts/writer-posts/${writerId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      return data.data
     },
   })
 }
