@@ -167,3 +167,30 @@ export function useApproveUser() {
   }
   
 
+  export interface UpdateProfileData {
+    firstName: string
+    lastName: string
+    image?: string
+  }
+  
+  export function useUpdateProfile() {
+    const queryClient = useQueryClient()
+  
+    return useMutation({
+      mutationFn: async (data: UpdateProfileData) => {
+        const { data: response } = await axios.put(`${API_URI}/users/update-user`, data, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        return response.data
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["user"] })
+        toast.success("Profile updated successfully")
+      },
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message ?? "Failed to update profile")
+      },
+    })
+  }
