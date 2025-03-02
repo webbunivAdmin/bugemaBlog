@@ -306,6 +306,7 @@ export const getPopularContents = async (req, res, next) => {
       {
         $match: {
           status: true,
+          state: "Published",
         },
       },
       {
