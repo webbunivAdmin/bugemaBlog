@@ -20,6 +20,7 @@ import {
   getWriterRecentComments,
   getWriterRecentPosts,
   getWriterPosts,
+  getPublishedPosts,
 } from "../controllers/postController.js";
 
 const router = express.Router();
@@ -46,6 +47,7 @@ router.patch("/update/:id", userAuth, updatePost);
 
 // GET POSTS ROUTES
 router.get("/", getPosts);
+router.get("/published", getPublishedPosts);
 router.get("/popular", getPopularContents);
 router.get("/:postId", getPost);
 router.get("/comments/:postId", getComments);
