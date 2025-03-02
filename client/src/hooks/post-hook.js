@@ -27,7 +27,7 @@ export const usePosts = ({writerId}) => {
             setIsLoading(true);
 
             try {
-                const {data} = await axios.get(`${API_URL}/posts`);
+                const {data} = await axios.get(`${API_URL}/posts/published`);
         
                 setPosts(data?.data || []);
                 setNumOfPages(data?.numOfPages );
