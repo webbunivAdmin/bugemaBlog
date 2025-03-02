@@ -69,7 +69,12 @@ export function useSignIn() {
     onSuccess: (data) => {
       signIn(data.user)
       toast(data?.message)
-      router.push("/dashboard")
+
+      if (data.user.status !== "Active") {
+        router.push("/auth/pending-account")
+      } else {
+        router.push("/dashboard")
+      }
     },
   })
 }

@@ -4,12 +4,15 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 
 interface User {
+  _id: string
   id: string
   firstName: string
   lastName: string
+  name: string
   email: string
   image?: string
-  role: "Admin" | "Writer"
+  accountType: "Admin" | "Writer"
+  status: "Pending" | "Active" | "Suspended"
   emailVerified: boolean
 }
 

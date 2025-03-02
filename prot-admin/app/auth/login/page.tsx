@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/ui/password-input"
 import { useSignIn } from "@/lib/hooks/use-auth"
+import Image from "next/image"
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -59,7 +60,7 @@ export default function LoginPage() {
     }
 
     // Create initial particles
-    const particles = []
+    const particles: HTMLDivElement[] = []
     for (let i = 0; i < 20; i++) {
       const particle = createParticle()
       if (particle && backgroundRef.current) {
@@ -151,18 +152,9 @@ export default function LoginPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-blue-500/5 blur-3xl animate-nebula"></div>
         </div>
         <div className="relative z-20 flex items-center text-lg font-medium">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mr-2 h-6 w-6"
-          >
-            <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-          </svg>
+
+          <Image src="https://cloud.appwrite.io/v1/storage/buckets/676995bd003a7bc1e278/files/67a9b43a0028ad0400db/view?project=674dcf7b003d57db960a&mode=admin" alt="Bugema University Logo" width={40} height={40} />
+
           Bugema University
         </div>
 

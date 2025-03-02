@@ -20,7 +20,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       router.push("/auth/login")
     }
 
-    if (!isLoading && user && allowedRoles && !allowedRoles.includes(user.role)) {
+    if (!isLoading && user && allowedRoles && !allowedRoles.includes(user.accountType)) {
       router.push("/dashboard")
     }
   }, [user, isLoading, router, allowedRoles])
@@ -33,7 +33,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     )
   }
 
-  if (!user || (allowedRoles && !allowedRoles.includes(user.role))) {
+  if (!user || (allowedRoles && !allowedRoles.includes(user.accountType))) {
     return null
   }
 
