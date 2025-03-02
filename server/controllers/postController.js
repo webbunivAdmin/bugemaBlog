@@ -645,3 +645,15 @@ export const getWriterPosts = async (req, res) => {
   }
 };
 
+export const getPublishedPosts = async (req, res) => {
+  try {
+    const publishedPosts = await Posts.find({ state: "Published" })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: publishedPosts });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+
