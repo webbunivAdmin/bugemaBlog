@@ -647,11 +647,44 @@ export const getWriterPosts = async (req, res) => {
 
 export const getPublishedPosts = async (req, res) => {
   try {
-    const publishedPosts = await Posts.find({ state: "Published" })
-      .sort({ createdAt: -1 });
+    const { cat, writerId } = req.query;
 
-    res.status(200).json({ success: true, data: publishedPosts });
+    let query = { state: "Published", status: true };
+
+    if (cat) {
+      query.cat = cat;
+    } else if (writerId) {
+      query.user = writerId;
+    }
+
+    let queryResult = Posts.find(query)
+      .populate({
+        path: "user",
+        select: "name image -password",
+      })
+      .sort({ _id: -1 });
+
+    // pagination
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    // records count
+    const totalPost = await Posts.countDocuments(query);
+    const numOfPages = Math.ceil(totalPost / limit);
+
+    queryResult = queryResult.skip(skip).limit(limit);
+    const posts = await queryResult;
+
+    res.status(200).json({
+      success: true,
+      totalPost,
+      data: posts,
+      page,
+      numOfPages,
+    });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
