@@ -330,7 +330,7 @@ export const getPopularContents = async (req, res, next) => {
     const writers = await Users.aggregate([
       {
         $match: {
-          accountType: { $ne: "User" },
+          accountType: "Writer",
         },
       },
       {
@@ -344,7 +344,7 @@ export const getPopularContents = async (req, res, next) => {
         $sort: { followers: -1 },
       },
       {
-        $limit: 5,
+        $limit: 3,
       },
     ]);
 
