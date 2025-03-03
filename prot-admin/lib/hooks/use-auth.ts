@@ -28,12 +28,10 @@ export function useSignUp() {
       return data
     },
     onError: (error: any) => {
-      toast(error?.response?.data?.message ?? error.message)
+      toast.error(error?.response?.data?.message ?? error.message)
     },
     onSuccess: (data) => {
-      setUser(data.user)
-      setToken(data.token)
-      toast(data?.message)
+      toast.success(data?.message ?? "Registration successful!")
 
       localStorage.setItem(
         "otp_data",

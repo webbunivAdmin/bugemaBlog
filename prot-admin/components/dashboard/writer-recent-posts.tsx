@@ -7,11 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { useAuthStore } from "@/lib/store"
 import { useWriterRecentPosts } from "@/lib/hooks/use-dashboard"
+import { useAuth } from "@/lib/context/auth-context"
 
 export function WriterRecentPosts() {
-  const user = useAuthStore((state) => state.user)
+  const { user } = useAuth()
   const { data: writerPosts, isLoading, error } = useWriterRecentPosts(user?._id ?? "")
 
   if (error) return <div>Error loading your posts</div>
