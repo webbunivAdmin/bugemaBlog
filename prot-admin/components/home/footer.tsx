@@ -8,9 +8,10 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <div className="flex flex-col items-center gap-4 md:flex-row md:gap-2">
             <Newspaper className="h-6 w-6" />
-            <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-              &copy; 2025 Bugema University Data Team. All rights reserved.
+            <p className="text-center text-sm md:text-base leading-relaxed text-muted-foreground md:text-left">
+              &copy; {new Date().getFullYear()} Bugema University. All rights reserved.
             </p>
+
           </div>
           <nav className="flex items-center gap-4">
             <Link href="/terms" className="text-sm font-medium hover:underline underline-offset-4">
