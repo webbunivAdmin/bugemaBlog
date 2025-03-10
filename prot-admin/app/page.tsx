@@ -1,9 +1,11 @@
+"use client";
 
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight, BookOpen, Users, GraduationCap, Newspaper, BarChart3 } from "lucide-react"
+import { motion } from "framer-motion";
 
 
 export default function HomePage() {
@@ -42,7 +44,14 @@ export default function HomePage() {
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1">
               <Link href="/" className="mr-6 flex items-center space-x-2">
+              <motion.div
+                  initial={{ y: 0 }}
+                  animate={{ y: [-5, 5, -5] }} // Floating effect
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                >
                 <Image src="https://cloud.appwrite.io/v1/storage/buckets/676995bd003a7bc1e278/files/67a9b43a0028ad0400db/view?project=674dcf7b003d57db960a&mode=admin" alt="Bugema University Logo" width={40} height={40} />
+                  
+                </motion.div>
                 <span className="hidden font-bold sm:inline-block">Bugema University</span>
               </Link>
             </div>
@@ -161,7 +170,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-4 md:flex-row md:gap-2">
               <Image src="https://cloud.appwrite.io/v1/storage/buckets/676995bd003a7bc1e278/files/67a9b43a0028ad0400db/view?project=674dcf7b003d57db960a&mode=admin" alt="Bugema University Logo" width={40} height={40} />
               <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-                © 2023 Bugema University. All rights reserved.
+              &copy; {new Date().getFullYear()} Bugema University. All rights reserved.
               </p>
             </div>
             <nav className="flex items-center gap-4">
