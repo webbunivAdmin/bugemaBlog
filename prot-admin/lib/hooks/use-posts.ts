@@ -135,26 +135,30 @@ export function useUpdatePost() {
 }
 
 export function useDeletePost() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (postId: string) => {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Unauthorized");
+
       const response = await axios.delete(`${API_URI}/posts/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      return response.data
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] })
-      toast.success("Post deleted successfully")
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success("Post deleted successfully");
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.message ?? "Failed to delete post")
+      const errorMessage = error?.response?.data?.message ?? "Failed to delete post";
+      toast.error(errorMessage);
     },
-  })
+  });
 }
+
 
 
 export function usePublishPosts() {

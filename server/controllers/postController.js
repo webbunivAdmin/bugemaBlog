@@ -429,20 +429,25 @@ export const getCommentById = async (req, res, next) => {
 
 export const deletePost = async (req, res, next) => {
   try {
-    const { userId } = req.body.user;
     const { id } = req.params;
 
-    await Posts.findOneAndDelete({ _id: id, user: userId });
+    const post = await Posts.findById(id);
+    if (!post) {
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+
+    await post.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: "Deleted successfully",
+      message: "Post deleted successfully",
     });
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
+    console.error("Delete Post Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
 
 export const deleteComment = async (req, res, next) => {
   try {

@@ -10,7 +10,8 @@ import {
   approveUser,
   makeAdmin,
   makeWriter,
-  suspendUser
+  suspendUser,
+  deleteUser,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -31,4 +32,5 @@ router.patch('/suspend/:id', userAuth, suspendUser);
 
 router.get("/get-user/:id?", getWriter);
 
+router.delete('/:id', userAuth, deleteUser);
 export default router;
