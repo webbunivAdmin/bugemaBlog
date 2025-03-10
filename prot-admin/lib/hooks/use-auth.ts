@@ -28,12 +28,10 @@ export function useSignUp() {
       return data
     },
     onError: (error: any) => {
-      toast(error?.response?.data?.message ?? error.message)
+      toast.error(error?.response?.data?.message ?? error.message)
     },
     onSuccess: (data) => {
-      setUser(data.user)
-      setToken(data.token)
-      toast(data?.message)
+      toast.success(data?.message ?? "Registration successful!")
 
       localStorage.setItem(
         "otp_data",
@@ -129,4 +127,40 @@ export function useResendOTP() {
     },
   })
 }
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const { data } = await axios.post(`${API_URI}/auth/forgot-password`, { email })
+      return data
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message ?? error.message)
+    },
+    onSuccess: (data) => {
+      toast.success(data?.message ?? "Password reset email sent to your email!")
+    },
+  })
+}
+
+export function useResetPassword() {
+  const router = useRouter()
+
+  return useMutation({
+    mutationFn: async ({ token, newPassword }: { token: string; newPassword: string }) => {
+      const { data } = await axios.post(`${API_URI}/auth/reset-password/${token}`, { newPassword })
+      return data
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message ?? error.message)
+    },
+    onSuccess: (data) => {
+      toast.success(data?.message ?? "Password reset successfully!")
+      setTimeout(() => {
+        router.push("/auth/login")
+      }, 2000)
+    },
+  })
+}
+
 

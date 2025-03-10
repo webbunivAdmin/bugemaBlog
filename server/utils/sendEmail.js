@@ -5,7 +5,7 @@ import { generateOTP, hashString } from "./index.js";
 
 dotenv.config();
 
-const { AUTH_EMAIL, AUTH_PASSWORD } = process.env;
+const { AUTH_EMAIL, AUTH_PASSWORD, CLIENT_URL } = process.env;
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
@@ -79,5 +79,37 @@ export const sendVerificationEmail = async (user, res, token) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "Something went wrong" });
+  }
+};
+
+
+export const sendPasswordResetEmail = async (user, resetToken) => {
+  const { email, name } = user;
+  const resetLink = `${CLIENT_URL}/auth/reset-password/${resetToken}`;
+
+  const mailOptions = {
+    from: 'Bugema University Data Team "<data@bugemauniv.ac.ug>"',
+    to: email,
+    subject: "Password Reset Request",
+    html: `
+      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px; text-align: center;">
+          <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+              <h2 style="color: #0838BC;">Reset Your Password</h2>
+              <p>Hi <b>${name}</b>,<br>Click the button below to reset your password.</p>
+              <a href="${resetLink}" style="background: #0838BC; color: #fff; padding: 10px 20px; text-decoration: none; font-size: 18px; border-radius: 6px;">
+                  Reset Password
+              </a>
+              <p>This link <b>expires in 1 hour</b>.</p>
+              <hr>
+              <p>Regards,<br><b>Bugema University Blogs Team</b></p>
+          </div>
+      </div>`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Password reset email sent to ${email}`);
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
   }
 };

@@ -7,11 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useAuthStore } from "@/lib/store"
 import { useWriterRecentComments } from "@/lib/hooks/use-dashboard"
+import { useAuth } from "@/lib/context/auth-context"
 
 export function WriterRecentComments() {
-  const user = useAuthStore((state) => state.user)
+  const { user } = useAuth()
   const { data: writerComments, isLoading, error } = useWriterRecentComments(user?._id ?? "")
 
   if (error) return <div>Error loading comments on your posts</div>

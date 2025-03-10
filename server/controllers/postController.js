@@ -306,6 +306,7 @@ export const getPopularContents = async (req, res, next) => {
       {
         $match: {
           status: true,
+          state: "Published",
         },
       },
       {
@@ -329,7 +330,7 @@ export const getPopularContents = async (req, res, next) => {
     const writers = await Users.aggregate([
       {
         $match: {
-          accountType: { $ne: "User" },
+          accountType: "Writer",
         },
       },
       {
@@ -343,7 +344,7 @@ export const getPopularContents = async (req, res, next) => {
         $sort: { followers: -1 },
       },
       {
-        $limit: 5,
+        $limit: 3,
       },
     ]);
 
@@ -428,20 +429,25 @@ export const getCommentById = async (req, res, next) => {
 
 export const deletePost = async (req, res, next) => {
   try {
-    const { userId } = req.body.user;
     const { id } = req.params;
 
-    await Posts.findOneAndDelete({ _id: id, user: userId });
+    const post = await Posts.findById(id);
+    if (!post) {
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+
+    await post.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: "Deleted successfully",
+      message: "Post deleted successfully",
     });
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
+    console.error("Delete Post Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
 
 export const deleteComment = async (req, res, next) => {
   try {
@@ -644,4 +650,49 @@ export const getWriterPosts = async (req, res) => {
     res.status(500).json({ message: "Server Error", error });
   }
 };
+
+export const getPublishedPosts = async (req, res) => {
+  try {
+    const { cat, writerId } = req.query;
+
+    let query = { state: "Published", status: true };
+
+    if (cat) {
+      query.cat = cat;
+    } else if (writerId) {
+      query.user = writerId;
+    }
+
+    let queryResult = Posts.find(query)
+      .populate({
+        path: "user",
+        select: "name image -password",
+      })
+      .sort({ _id: -1 });
+
+    // pagination
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    // records count
+    const totalPost = await Posts.countDocuments(query);
+    const numOfPages = Math.ceil(totalPost / limit);
+
+    queryResult = queryResult.skip(skip).limit(limit);
+    const posts = await queryResult;
+
+    res.status(200).json({
+      success: true,
+      totalPost,
+      data: posts,
+      page,
+      numOfPages,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
 
