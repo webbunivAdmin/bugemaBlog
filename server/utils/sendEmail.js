@@ -85,7 +85,7 @@ export const sendVerificationEmail = async (user, res, token) => {
 
 export const sendPasswordResetEmail = async (user, resetToken) => {
   const { email, name } = user;
-  const resetLink = `${CLIENT_URL}/reset-password?token=${resetToken}&email=${email}`;
+  const resetLink = `${CLIENT_URL}/auth/reset-password/${resetToken}`;
 
   const mailOptions = {
     from: 'Bugema University Data Team "<data@bugemauniv.ac.ug>"',

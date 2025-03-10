@@ -176,22 +176,40 @@ export const forgotPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const { token } = req.params;
-    const { newPassword } = req.body;
+    const { token } = req.params;  // Token from the URL
+    const { newPassword } = req.body;  // New password from the body
 
-    const user = await Users.findOne({ resetPasswordToken: token });
+    // Find the user who has the reset password token
+    const user = await Users.findOne({ resetPasswordToken: { $exists: true } });
 
-    if (!user || user.resetPasswordExpires < Date.now()) {
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Compare the token from the URL with the hashed token in the database
+    const isTokenValid = await compareString(token, user.resetPasswordToken);
+    if (!isTokenValid) {
       return res.status(400).json({
         success: false,
         message: "Invalid or expired reset token",
       });
     }
 
-    // Hash new password and update user
+    // Check if the token has expired
+    if (user.resetPasswordExpires < Date.now()) {
+      return res.status(400).json({
+        success: false,
+        message: "Reset token has expired",
+      });
+    }
+
+    // Hash the new password and update the user's password
     user.password = await hashString(newPassword);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    user.resetPasswordToken = undefined;  // Remove the reset token
+    user.resetPasswordExpires = undefined;  // Remove the expiration time
 
     await user.save();
 
