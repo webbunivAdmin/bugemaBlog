@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema(
     provider: { type: String, default: "Codewave" },
     followers: [{ type: Schema.Types.ObjectId, ref: "Followers" }],
     status: { type: String, default: "Pending" },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
   },
   { timestamps: true }
 );
