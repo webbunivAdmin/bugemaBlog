@@ -20,7 +20,7 @@ const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   desc: z.string().min(1, "Content is required"),
   cat: z.string().min(1, "Category is required"),
-  image: z.string().optional(),
+  img: z.string().optional(),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -37,7 +37,7 @@ export default function NewPostPage() {
       title: "",
       desc: "",
       cat: "",
-      image: "",
+      img: "",
     },
   })
 
@@ -65,7 +65,7 @@ export default function NewPostPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
-                name="image"
+                name="img"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cover Image</FormLabel>

@@ -19,6 +19,12 @@ export function ImageUpload({ value, onChange, onError, className, ...props }: I
   const [isUploading, setIsUploading] = React.useState(false)
   const [preview, setPreview] = React.useState<string | undefined>(value)
 
+  // Add this useEffect to update preview when value changes
+  React.useEffect(() => {
+    console.log("ImageUpload value changed:", value)
+    setPreview(value)
+  }, [value])
+
   const onDrop = React.useCallback(
     async (acceptedFiles: File[]) => {
       try {
