@@ -61,10 +61,8 @@ export default function EditPostPage() {
           img: post.img || "",
         }
 
-        console.log("Setting form values:", formValues)
         form.reset(formValues)
 
-        // Force an update to the img field specifically
         form.setValue("img", post.img || "")
 
         setIsFormReady(true)
