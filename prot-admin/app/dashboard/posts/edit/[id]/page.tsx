@@ -26,7 +26,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-const categories = ["TECHNOLOGY", "BUSINESS", "SCIENCE", "HEALTH", "ENTERTAINMENT", "SPORTS"]
+const categories = ["Technology", "Business", "Science", "Health", "Entertainment", "Sports"]
 
 export default function EditPostPage() {
   const params = useParams()
@@ -35,7 +35,6 @@ export default function EditPostPage() {
   const { mutate: updatePost, isPending } = useUpdatePost()
   const [isFormReady, setIsFormReady] = useState(false)
 
-  // Set up form with empty default values initially
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,7 +45,6 @@ export default function EditPostPage() {
     },
   })
 
-  // Update form values when post data is loaded
   useEffect(() => {
     if (post) {
       console.log("Loading post data:", post)
@@ -210,7 +208,10 @@ export default function EditPostPage() {
                       <FormControl>
                         <Editor
                           value={field.value}
-                          onChange={field.onChange}
+                          onChange={(newValue) => {
+                            console.log("Editor content changed:", newValue);
+                            field.onChange(newValue);
+                          }}
                           placeholder="Write your post content here..."
                         />
                       </FormControl>

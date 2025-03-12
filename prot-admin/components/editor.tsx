@@ -141,8 +141,8 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
       const processedHtml = editor
         .getHTML()
         .replace(
-          /<p class="indent-preserve">(.*?)<\/p>/g,
-          (match, content) => `<p class="indent-preserve">${content.trim()}</p>\n`,
+          /<p class="whitespace-pre-wrap my-4">(.*?)<\/p>/g,
+          (match, content) => `<p class="whitespace-pre-wrap my-2">${content.trim()}</p>\n\n`,
         )
       onChange(processedHtml)
     },
@@ -516,7 +516,7 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
             "prose-blockquote:pl-4 prose-blockquote:border-l-2 prose-blockquote:my-4",
             "prose-ul:pl-8 prose-ul:my-4 prose-ol:pl-8 prose-ol:my-4",
             "prose-li:my-2",
-            "prose-headings:font-bold prose-headings:tracking-tight",
+            "prose-headings:font-bold prose-headings:tracking-tight prose-headings:my-2",
           )}
         />
       </div>
