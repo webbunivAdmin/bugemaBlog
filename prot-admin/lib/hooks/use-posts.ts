@@ -117,7 +117,7 @@ export function useUpdatePost() {
 
   return useMutation({
     mutationFn: async ({ postId, data }: UpdatePostData) => {
-      const response = await axios.patch(`${API_URI}/posts/${postId}`, data, {
+      const response = await axios.patch(`${API_URI}/posts/update/${postId}`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
