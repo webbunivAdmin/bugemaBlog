@@ -151,6 +151,16 @@ export function Editor({ value, onChange, placeholder = "Write something..." }: 
     },
   })
 
+  // Add this useEffect to update editor content when value changes
+  React.useEffect(() => {
+    if (editor && value) {
+      // Only update if the content is different to avoid cursor jumping
+      if (editor.getHTML() !== value) {
+        editor.commands.setContent(value)
+      }
+    }
+  }, [editor, value])
+
   if (!editor) {
     return null
   }

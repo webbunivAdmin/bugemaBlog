@@ -11,7 +11,7 @@ export interface Post {
   title: string
   desc: string
   slug: string
-  image?: string
+  img: string
   cat: string
   status: boolean
   state: "Pending" | "Published" | "Idle"

@@ -100,10 +100,10 @@ export default function ViewPostPage() {
 
       <Card>
         <CardHeader className="space-y-6">
-          {post.image && (
+          {post.img && (
             <div className="aspect-video overflow-hidden rounded-lg border">
               <Image
-                src={post.image || "/placeholder.svg"}
+                src={post.img || "/placeholder.svg"}
                 alt={post.title}
                 width={1200}
                 height={630}
