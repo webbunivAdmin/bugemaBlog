@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -21,7 +21,7 @@ const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   desc: z.string().min(1, "Content is required"),
   cat: z.string().min(1, "Category is required"),
-  image: z.string().optional(),
+  img: z.string().optional(),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -33,6 +33,7 @@ export default function EditPostPage() {
   const router = useRouter()
   const { data: post, isLoading: isLoadingPost, error } = usePost(params.id as string)
   const { mutate: updatePost, isPending } = useUpdatePost()
+  const [isFormReady, setIsFormReady] = useState(false)
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -40,23 +41,35 @@ export default function EditPostPage() {
       title: "",
       desc: "",
       cat: "",
-      image: "",
+      img: "",
     },
   })
 
-  // Update form values when post data is loaded
   useEffect(() => {
     if (post) {
-      form.reset({
-        title: post.title,
-        desc: post.desc,
-        cat: post.cat.toLowerCase(),
-        image: post.image,
-      })
+      console.log("Loading post data:", post)
+
+      // Force a delay to ensure the form reset happens after rendering
+      setTimeout(() => {
+        // Make sure img is properly set from post.img
+        const formValues = {
+          title: post.title || "",
+          desc: post.desc || "",
+          cat: post.cat || "",
+          img: post.img || "",
+        }
+
+        form.reset(formValues)
+
+        form.setValue("img", post.img || "")
+
+        setIsFormReady(true)
+      }, 100)
     }
   }, [post, form])
 
   function onSubmit(values: FormData) {
+    console.log("Submitting values:", values)
     updatePost(
       { postId: params.id as string, data: values },
       {
@@ -122,17 +135,22 @@ export default function EditPostPage() {
         <CardContent className="p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
               <FormField
                 control={form.control}
-                name="image"
+                name="img"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cover Image</FormLabel>
                     <FormControl>
                       <ImageUpload
                         value={field.value}
-                        onChange={field.onChange}
-                        onError={() => {
+                        onChange={(url) => {
+                          console.log("Image changed to:", url)
+                          field.onChange(url)
+                        }}
+                        onError={(error) => {
+                          console.error("Image upload error:", error)
                           toast.error("Failed to upload image. Please try again.")
                         }}
                       />
@@ -161,7 +179,7 @@ export default function EditPostPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Category</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a category" />
@@ -169,7 +187,7 @@ export default function EditPostPage() {
                         </FormControl>
                         <SelectContent>
                           {categories.map((category) => (
-                            <SelectItem key={category} value={category.toLowerCase()}>
+                            <SelectItem key={category} value={category}>
                               {category}
                             </SelectItem>
                           ))}
@@ -180,23 +198,28 @@ export default function EditPostPage() {
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="desc"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Content</FormLabel>
-                    <FormControl>
-                      <Editor
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder="Write your post content here..."
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {isFormReady && (
+                <FormField
+                  control={form.control}
+                  name="desc"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Content</FormLabel>
+                      <FormControl>
+                        <Editor
+                          value={field.value}
+                          onChange={(newValue) => {
+                            console.log("Editor content changed:", newValue);
+                            field.onChange(newValue);
+                          }}
+                          placeholder="Write your post content here..."
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               <div className="flex justify-end gap-4">
                 <Button type="button" variant="outline" onClick={() => router.back()}>
                   Cancel
