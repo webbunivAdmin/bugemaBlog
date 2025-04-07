@@ -1,6 +1,8 @@
-import { MdCastForEducation, MdOutlineSportsHandball } from "react-icons/md";
-import { BsCodeSlash, BsNewspaper } from "react-icons/bs";
-import { GiClothes } from "react-icons/gi";
+import { BsNewspaper } from "react-icons/bs";
+import { MdBusinessCenter } from "react-icons/md";
+import { MdScience } from "react-icons/md";
+import { FaHeartbeat } from "react-icons/fa";
+import { GiPopcorn, GiSoccerBall } from "react-icons/gi";
 
 export const posts = [
   {
@@ -209,30 +211,40 @@ export const posts = [
 
 export const CATEGORIES = [
   {
-    label: "NEWS",
+    label: "Technology",
     color: "bg-[#e11d48]",
-    text: "text-[#fff]",
+    text: "text-white",
     icon: <BsNewspaper />,
   },
   {
-    label: "SPORTS",
+    label: "Business",
     color: "bg-[#2563eb]",
-    icon: <MdOutlineSportsHandball />,
+    text: "text-white",
+    icon: <MdBusinessCenter />,
   },
   {
-    label: "CODING",
+    label: "Science",
     color: "bg-[#000000]",
-    icon: <BsCodeSlash />,
+    text: "text-white",
+    icon: <MdScience />,
   },
   {
-    label: "EDUCATION",
+    label: "Health",
     color: "bg-[#ca8a04]",
-    icon: <MdCastForEducation />,
+    text: "text-white",
+    icon: <FaHeartbeat />,
   },
   {
-    label: "FASHION",
+    label: "Entertainment",
     color: "bg-[#9333ea]",
-    icon: <GiClothes />,
+    text: "text-white",
+    icon: <GiPopcorn />,
+  },
+  {
+    label: "Sports",
+    color: "bg-[#10b981]",
+    text: "text-white",
+    icon: <GiSoccerBall />,
   },
 ];
 
