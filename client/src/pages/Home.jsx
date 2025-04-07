@@ -67,7 +67,7 @@ export default function Home() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {filteredCategories.map((cat) => (
             <motion.div key={cat.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link to={`/category?cat=${cat?.label}`} passHref>
