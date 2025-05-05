@@ -236,21 +236,45 @@ export const commentPost = async (req, res, next) => {
 
 export const updatePost = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
+    const { id } = req.params
+    const { title, desc, img, cat, status } = req.body
 
-    const post = await Posts.findByIdAndUpdate(id, { status }, { new: true });
+    // Create an update object with only the fields that are provided
+    const updateData = {}
+
+    if (title !== undefined) updateData.title = title
+    if (desc !== undefined) updateData.desc = desc
+    if (img !== undefined) updateData.img = img
+    if (cat !== undefined) updateData.cat = cat
+    if (status !== undefined) updateData.status = status
+
+    // Only update if there's something to update
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No fields provided for update",
+      })
+    }
+
+    const post = await Posts.findByIdAndUpdate(id, updateData, { new: true })
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      })
+    }
 
     res.status(200).json({
-      sucess: true,
-      message: "Action performed successfully",
+      success: true,
+      message: "Post updated successfully",
       data: post,
-    });
+    })
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
+    console.log(error)
+    res.status(404).json({ message: error.message })
   }
-};
+}
 
 
 
