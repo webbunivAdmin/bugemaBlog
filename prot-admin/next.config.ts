@@ -20,9 +20,9 @@ const nextConfig: NextConfig = {
   },
 
   serverExternalPackages: [],
-  // Remove optimizeFonts as it's no longer recognized
+
   experimental: {
-    // Empty or remove if not needed
+
   },
 };
 
