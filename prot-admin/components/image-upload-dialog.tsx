@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useDropzone } from "react-dropzone"
-import { ImageIcon, Loader2, Upload } from "lucide-react"
+import { ImageIcon, Loader2, Upload } from 'lucide-react'
 import { toast } from "sonner"
 
 import {
@@ -19,6 +19,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { uploadFile } from "@/lib/upload"
 import { cn } from "@/lib/utils"
 
+// Define max file size: 4MB in bytes
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 4MB
+
 interface ImageUploadDialogProps {
   onImageUploaded: (url: string) => void
 }
@@ -31,8 +34,15 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
   const onDrop = React.useCallback(
     async (acceptedFiles: File[]) => {
       try {
-        setIsUploading(true)
         const file = acceptedFiles[0]
+        
+        // Check file size before uploading
+        if (file.size > MAX_FILE_SIZE) {
+          toast.error("File is too large. Maximum size is 10MB.");
+          return;
+        }
+        
+        setIsUploading(true)
         const toastId = toast.loading("Uploading image...")
 
         const downloadURL = await uploadFile(file)
@@ -56,6 +66,20 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
     },
     maxFiles: 1,
     multiple: false,
+    // Add maxSize validation to Dropzone as well
+    maxSize: MAX_FILE_SIZE,
+    onDropRejected: (fileRejections) => {
+      // Handle rejected files (too large or wrong type)
+      const isSizeError = fileRejections.some(
+        rejection => rejection.errors.some(error => error.code === 'file-too-large')
+      );
+      
+      if (isSizeError) {
+        toast.error("File is too large. Maximum size is 10MB.");
+      } else {
+        toast.error("Invalid file type. Please upload a PNG, JPG, or GIF.");
+      }
+    }
   })
 
   const handleUrlSubmit = (e: React.FormEvent) => {
@@ -103,7 +127,7 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
                 <div className="flex flex-col items-center justify-center text-sm text-muted-foreground">
                   <Upload className="h-10 w-10 mb-2" />
                   <p>Drag & drop an image here, or click to select one</p>
-                  <p className="text-xs">PNG, JPG, GIF up to 10MB</p>
+                  <p className="text-xs">PNG, JPG, GIF up to 4MB</p>
                 </div>
               )}
             </div>
@@ -119,4 +143,3 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
     </Dialog>
   )
 }
-
