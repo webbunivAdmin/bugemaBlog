@@ -12,18 +12,17 @@ const nextConfig: NextConfig = {
         hostname: "cloud.appwrite.io",
       },
     ],
-    // Add these settings to increase timeout and memory
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ['image/webp'],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: false,
   },
-  // Increase serverless function timeout
+
+  serverExternalPackages: [],
+  // Remove optimizeFonts as it's no longer recognized
   experimental: {
-    serverComponentsExternalPackages: [],
-    // This might help with timeouts in development
-    optimizeFonts: true,
+    // Empty or remove if not needed
   },
 };
 
