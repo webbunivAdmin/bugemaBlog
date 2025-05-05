@@ -19,8 +19,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { uploadFile } from "@/lib/upload"
 import { cn } from "@/lib/utils"
 
-// Define max file size: 4MB in bytes
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 4MB
+// Define max file size: 10MB in bytes
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 interface ImageUploadDialogProps {
   onImageUploaded: (url: string) => void
@@ -66,10 +66,8 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
     },
     maxFiles: 1,
     multiple: false,
-    // Add maxSize validation to Dropzone as well
     maxSize: MAX_FILE_SIZE,
     onDropRejected: (fileRejections) => {
-      // Handle rejected files (too large or wrong type)
       const isSizeError = fileRejections.some(
         rejection => rejection.errors.some(error => error.code === 'file-too-large')
       );
@@ -85,9 +83,15 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (imageUrl) {
-      onImageUploaded(imageUrl)
-      setIsOpen(false)
-      setImageUrl("")
+      // Validate URL before submitting
+      try {
+        new URL(imageUrl);
+        onImageUploaded(imageUrl)
+        setIsOpen(false)
+        setImageUrl("")
+      } catch (error) {
+        toast.error("Please enter a valid URL");
+      }
     }
   }
 
@@ -127,7 +131,7 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
                 <div className="flex flex-col items-center justify-center text-sm text-muted-foreground">
                   <Upload className="h-10 w-10 mb-2" />
                   <p>Drag & drop an image here, or click to select one</p>
-                  <p className="text-xs">PNG, JPG, GIF up to 4MB</p>
+                  <p className="text-xs">PNG, JPG, GIF up to 10MB</p>
                 </div>
               )}
             </div>

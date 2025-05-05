@@ -12,28 +12,41 @@ const storage = new Storage(client);
 
 export async function uploadFile(file: File, onProgress?: (progress: number) => void): Promise<string> {
   try {
+    // Validate environment variables
+    const bucketId = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+    if (!bucketId) {
+      throw new Error("Appwrite bucket ID is not configured");
+    }
+    
     // Create a unique ID for the file
     const fileId = ID.unique();
     
-    // For progress tracking, we need to use the Appwrite SDK's built-in mechanism
-    // This is typically done by subscribing to events before starting the upload
-    
     // Upload the file to Appwrite storage
     const result = await storage.createFile(
-      process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID || '',
+      bucketId,
       fileId,
       file
     );
     
     // Get the file view URL
     const fileUrl = storage.getFileView(
-      process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID || '', 
+      bucketId, 
       result.$id
     );
     
     return fileUrl;
   } catch (error) {
     console.error("Error uploading file:", error);
+    
+    // More specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("Network Error")) {
+        throw new Error("Network error while uploading. Please check your connection.");
+      } else if (error.message.includes("Permission denied")) {
+        throw new Error("Permission denied. Please check your Appwrite permissions.");
+      }
+    }
+    
     throw new Error("Failed to upload file");
   }
 }
