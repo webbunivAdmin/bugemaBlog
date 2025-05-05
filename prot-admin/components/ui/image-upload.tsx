@@ -3,10 +3,14 @@
 import * as React from "react"
 import Image from "next/image"
 import { useDropzone } from "react-dropzone"
-import { ImageIcon, Loader2 } from "lucide-react"
+import { ImageIcon, Loader2 } from 'lucide-react'
+import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
 import { uploadFile } from "@/lib/upload"
+
+// Define max file size: 10MB in bytes
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 interface ImageUploadProps {
   value?: string
@@ -19,22 +23,31 @@ export function ImageUpload({ value, onChange, onError, className, ...props }: I
   const [isUploading, setIsUploading] = React.useState(false)
   const [preview, setPreview] = React.useState<string | undefined>(value)
 
-  // Add this useEffect to update preview when value changes
+  // Update preview when value changes
   React.useEffect(() => {
-    console.log("ImageUpload value changed:", value)
     setPreview(value)
   }, [value])
 
   const onDrop = React.useCallback(
     async (acceptedFiles: File[]) => {
       try {
-        setIsUploading(true)
         const file = acceptedFiles[0]
+        
+        // Check file size before uploading
+        if (file.size > MAX_FILE_SIZE) {
+          const error = new Error("File is too large. Maximum size is 10MB.");
+          onError?.(error);
+          toast?.error("File is too large. Maximum size is 10MB.");
+          return;
+        }
+        
+        setIsUploading(true)
         const downloadURL = await uploadFile(file)
         onChange?.(downloadURL)
         setPreview(downloadURL)
       } catch (error) {
         onError?.(error as Error)
+        toast?.error("Failed to upload image. Please try again.");
       } finally {
         setIsUploading(false)
       }
@@ -49,6 +62,22 @@ export function ImageUpload({ value, onChange, onError, className, ...props }: I
     },
     maxFiles: 1,
     multiple: false,
+    maxSize: MAX_FILE_SIZE,
+    onDropRejected: (fileRejections) => {
+      const isSizeError = fileRejections.some(
+        rejection => rejection.errors.some(error => error.code === 'file-too-large')
+      );
+      
+      if (isSizeError) {
+        const error = new Error("File is too large. Maximum size is 10MB.");
+        onError?.(error);
+        toast?.error("File is too large. Maximum size is 10MB.");
+      } else {
+        const error = new Error("Invalid file type. Please upload a PNG, JPG, or GIF.");
+        onError?.(error);
+        toast?.error("Invalid file type. Please upload a PNG, JPG, or GIF.");
+      }
+    }
   })
 
   return (
@@ -75,6 +104,12 @@ export function ImageUpload({ value, onChange, onError, className, ...props }: I
             className="rounded-lg object-cover"
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            // Add error handling for image loading
+            onError={(e) => {
+              console.error("Image failed to load:", e);
+              // Optionally set a fallback image
+              // e.currentTarget.src = "/placeholder.svg";
+            }}
           />
         </div>
       ) : (
@@ -87,4 +122,3 @@ export function ImageUpload({ value, onChange, onError, className, ...props }: I
     </div>
   )
 }
-

@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
@@ -12,7 +12,14 @@ const nextConfig: NextConfig = {
         hostname: "cloud.appwrite.io",
       },
     ],
+    // Other image config...
+    
+    // Add a custom loader for Appwrite
+    loader: 'custom',
+    loaderFile: './lib/image-loader.ts',
   },
+  
+  serverExternalPackages: [],
 };
 
 export default nextConfig;

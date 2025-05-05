@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useDropzone } from "react-dropzone"
-import { ImageIcon, Loader2, Upload } from "lucide-react"
+import { ImageIcon, Loader2, Upload } from 'lucide-react'
 import { toast } from "sonner"
 
 import {
@@ -19,6 +19,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { uploadFile } from "@/lib/upload"
 import { cn } from "@/lib/utils"
 
+// Define max file size: 10MB in bytes
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 interface ImageUploadDialogProps {
   onImageUploaded: (url: string) => void
 }
@@ -31,8 +34,15 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
   const onDrop = React.useCallback(
     async (acceptedFiles: File[]) => {
       try {
-        setIsUploading(true)
         const file = acceptedFiles[0]
+        
+        // Check file size before uploading
+        if (file.size > MAX_FILE_SIZE) {
+          toast.error("File is too large. Maximum size is 10MB.");
+          return;
+        }
+        
+        setIsUploading(true)
         const toastId = toast.loading("Uploading image...")
 
         const downloadURL = await uploadFile(file)
@@ -56,14 +66,32 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
     },
     maxFiles: 1,
     multiple: false,
+    maxSize: MAX_FILE_SIZE,
+    onDropRejected: (fileRejections) => {
+      const isSizeError = fileRejections.some(
+        rejection => rejection.errors.some(error => error.code === 'file-too-large')
+      );
+      
+      if (isSizeError) {
+        toast.error("File is too large. Maximum size is 10MB.");
+      } else {
+        toast.error("Invalid file type. Please upload a PNG, JPG, or GIF.");
+      }
+    }
   })
 
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (imageUrl) {
-      onImageUploaded(imageUrl)
-      setIsOpen(false)
-      setImageUrl("")
+      // Validate URL before submitting
+      try {
+        new URL(imageUrl);
+        onImageUploaded(imageUrl)
+        setIsOpen(false)
+        setImageUrl("")
+      } catch (error) {
+        toast.error("Please enter a valid URL");
+      }
     }
   }
 
@@ -119,4 +147,3 @@ export function ImageUploadDialog({ onImageUploaded }: ImageUploadDialogProps) {
     </Dialog>
   )
 }
-

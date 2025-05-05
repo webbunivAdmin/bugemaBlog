@@ -1,7 +1,6 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import Image from "next/image"
 import { format } from "date-fns"
 import { ArrowLeft, Calendar, Eye, MessageSquare, User } from "lucide-react"
 
@@ -14,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { usePost } from "@/lib/hooks/use-posts"
 import { Comments } from "@/components/comments"
 import { cn } from "@/lib/utils"
+import { AppwriteImage } from "@/components/appwrite-image"
 
 export default function ViewPostPage() {
   const params = useParams()
@@ -102,7 +102,7 @@ export default function ViewPostPage() {
         <CardHeader className="space-y-6">
           {post.img && (
             <div className="aspect-video overflow-hidden rounded-lg border">
-              <Image
+              <AppwriteImage
                 src={post.img || "/placeholder.svg"}
                 alt={post.title}
                 width={1200}
@@ -133,7 +133,7 @@ export default function ViewPostPage() {
                 <User className="h-4 w-4" />
                 <div className="flex items-center gap-2">
                   <Avatar className="h-6 w-6">
-                    <AvatarImage src={post.user.image} alt={post.user.name} />
+                    <AvatarImage src={post.user.image || "/placeholder.svg"} alt={post.user.name} />
                     <AvatarFallback>{post.user.name[0]}</AvatarFallback>
                   </Avatar>
                   <span>{post.user.name}</span>
@@ -183,4 +183,3 @@ export default function ViewPostPage() {
     </div>
   )
 }
-
