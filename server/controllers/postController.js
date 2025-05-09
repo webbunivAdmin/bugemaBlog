@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
 import Posts from "../models/postModel.js";
 import Users from "../models/userModel.js";
 import Views from "../models/viewsModel.js";
@@ -172,12 +173,20 @@ export const getPostContent = async (req, res, next) => {
 export const createPost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
-    const { desc, img, title, slug, cat } = req.body;
+    const { desc, img, title, cat } = req.body;
 
-    if (!(desc || img || title || cat)) {
-      return next(
-        "All fields are required. Please enter a description, title, category and select image."
-      );
+    if (!(desc && img && title && cat)) {
+      return next("All fields are required. Please enter a description, title, category, and image.");
+    }
+
+    // Auto-generate slug from title
+    let baseSlug = slugify(title, { lower: true, strict: true });
+    let newSlug = baseSlug;
+
+    // Ensure slug uniqueness by appending a number if needed
+    let count = 1;
+    while (await Posts.findOne({ slug: newSlug })) {
+      newSlug = `${baseSlug}-${count++}`;
     }
 
     const post = await Posts.create({
@@ -185,18 +194,18 @@ export const createPost = async (req, res, next) => {
       desc,
       img,
       title,
-      slug,
+      slug: newSlug,
       cat,
     });
 
     res.status(200).json({
-      sucess: true,
+      success: true,
       message: "Post created successfully",
       data: post,
     });
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
+    console.error("Post creation failed:", error);
+    res.status(500).json({ message: error.message || "Internal server error" });
   }
 };
 
