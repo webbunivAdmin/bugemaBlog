@@ -26,7 +26,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-const categories = ["Technology", "Business", "Science", "Health", "Entertainment", "Sports"]
+const categories = ["Technology", "Business", "Science", "Health", "Entertainment", "Sports", "General", "Campus", "Other"]
 
 export default function EditPostPage() {
   const params = useParams()
